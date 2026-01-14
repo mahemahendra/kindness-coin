@@ -6,6 +6,7 @@
     },
     "Set-Content": true,
     "git init": true,
-    "git add": true
+    "git add": true,
+    "git commit": true
   }
 }
