@@ -7,6 +7,7 @@
     "Set-Content": true,
     "git init": true,
     "git add": true,
-    "git commit": true
+    "git commit": true,
+    "git push": true
   }
 }

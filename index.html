@@ -56,7 +56,10 @@
         <a href="index.html" class="logo d-flex align-items-center">
           <!-- Uncomment the line below if you also wish to use an image logo -->
           <!-- <img src="assets/img/logo.png" alt=""> -->
-          <h1 class="sitename">Kindness Coin</h1>
+          <h1 class="sitename">
+            <img src="assets/img/lions.PNG" alt="Lions Logo" class="logo-icon me-2">
+            Kindness Coin
+          </h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
@@ -274,8 +277,7 @@
         <div class="row mt-3">
           <div class="col-12 text-center">
             <small style="color: #ccc;">
-              <i class="bi bi-coin text-primary"></i> Tracked Kindness Coins &nbsp;&nbsp;
-              <i class="bi bi-geo-alt text-warning"></i> Sample Kindness Journey
+              <i class="bi bi-coin text-primary"></i> Tracked Kindness Coins
             </small>
           </div>
         </div>
@@ -513,40 +515,14 @@
         scrollWheelZoom: true
       });
       
-      // Dark mode tile layer from CartoDB
+      // Dark theme tile layer
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
       }).addTo(map);
       
-      // Sample kindness locations
-      const sampleLocations = [
-        {lat: 40.7128, lng: -74.0060, name: "New York", story: "Food drive for homeless shelter"},
-        {lat: 51.5074, lng: -0.1278, name: "London", story: "Community garden project"},
-        {lat: 35.6762, lng: 139.6503, name: "Tokyo", story: "Elder care assistance program"},
-        {lat: -33.8688, lng: 151.2093, name: "Sydney", story: "Beach cleanup initiative"},
-        {lat: 19.0760, lng: 72.8777, name: "Mumbai", story: "Education support for underprivileged children"}
-      ];
-      
-      // Add sample markers
-      sampleLocations.forEach(location => {
-        const marker = L.marker([location.lat, location.lng], {
-          icon: L.divIcon({
-            className: 'custom-marker sample-marker',
-            html: '<i class="bi bi-geo-alt" style="color: #ffc107; font-size: 24px;"></i>',
-            iconSize: [24, 24],
-            iconAnchor: [12, 24]
-          })
-        }).addTo(map);
-        
-        marker.bindPopup(`
-          <div style="color: #000; padding: 5px;">
-            <strong>${location.name}</strong><br>
-            <em>${location.story}</em>
-          </div>
-        `);
-      });
+      // Sample kindness locations removed - map will only show user-tracked coins
       
       // Coin code input functionality
       const coinCodeInput = document.getElementById('coinCodeInput');
