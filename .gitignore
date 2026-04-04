@@ -58,6 +58,13 @@ secrets.json
 
 # PHP composer
 vendor/
+composer.phar
+
+# SMTP credentials (sensitive)
+forms/config.php
+
+# Story submissions data
+forms/data/stories.csv
 
 # Image thumbnails
 *.thumb

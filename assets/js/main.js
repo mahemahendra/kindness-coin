@@ -220,6 +220,8 @@
   const formLoader = document.getElementById('formLoader');
   const toastMessage = document.getElementById('toastMessage');
 
+  const errorMessage = document.getElementById('errorMessage');
+
   if (submitStoryBtn && storyForm) {
     submitStoryBtn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -230,46 +232,65 @@
         return;
       }
 
-      // Collect form data
-      const formData = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        phone: document.getElementById('phone').value,
-        address: document.getElementById('address').value,
-        story: document.getElementById('story').value,
-        timestamp: new Date().toISOString()
-      };
+      // Build FormData from the actual form element
+      const formData = new FormData(storyForm);
 
-      // Log to console
-      console.log('Story Form Submission:', formData);
-
-      // Hide form and show loader
+      // Hide form, hide any previous error/toast, show loader
       storyForm.classList.add('d-none');
+      if (errorMessage) errorMessage.classList.add('d-none');
+      toastMessage.classList.add('d-none');
       formLoader.classList.remove('d-none');
       submitStoryBtn.disabled = true;
 
-      // Simulate API call with timeout
-      setTimeout(function() {
-        // Hide loader
+      // Submit to PHP backend
+      fetch('forms/submit-story.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(function(response) {
+        return response.json().then(function(data) {
+          return { ok: response.ok, data: data };
+        });
+      })
+      .then(function(result) {
         formLoader.classList.add('d-none');
-        
-        // Show success toast
-        toastMessage.classList.remove('d-none');
 
-        // Reset form after 2 seconds and close modal
-        setTimeout(function() {
-          storyForm.reset();
+        if (result.data.success) {
+          // Show success toast
+          toastMessage.classList.remove('d-none');
+
+          // Reset form after 2 seconds and close modal
+          setTimeout(function() {
+            storyForm.reset();
+            storyForm.classList.remove('d-none');
+            toastMessage.classList.add('d-none');
+            submitStoryBtn.disabled = false;
+
+            var modal = bootstrap.Modal.getInstance(document.getElementById('storyModal'));
+            if (modal) {
+              modal.hide();
+            }
+          }, 2500);
+        } else {
+          // Show error, restore form
           storyForm.classList.remove('d-none');
-          toastMessage.classList.add('d-none');
           submitStoryBtn.disabled = false;
-          
-          // Close modal
-          const modal = bootstrap.Modal.getInstance(document.getElementById('storyModal'));
-          if (modal) {
-            modal.hide();
+          if (errorMessage) {
+            errorMessage.querySelector('span').textContent = result.data.message || 'Something went wrong. Please try again.';
+            errorMessage.classList.remove('d-none');
           }
-        }, 2000);
-      }, 3000); // 3 second loader
+        }
+      })
+      .catch(function(err) {
+        console.error('Submission error:', err);
+        formLoader.classList.add('d-none');
+        storyForm.classList.remove('d-none');
+        submitStoryBtn.disabled = false;
+        if (errorMessage) {
+          errorMessage.querySelector('span').textContent = 'Network error. Please check your connection and try again.';
+          errorMessage.classList.remove('d-none');
+        }
+      });
     });
 
     // Reset form when modal is closed
@@ -278,6 +299,7 @@
       storyForm.classList.remove('d-none');
       formLoader.classList.add('d-none');
       toastMessage.classList.add('d-none');
+      if (errorMessage) errorMessage.classList.add('d-none');
       submitStoryBtn.disabled = false;
     });
   }
