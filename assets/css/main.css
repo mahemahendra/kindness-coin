@@ -631,6 +631,88 @@ body {
   }
 }
 
+/* Image Upload Drop Zone
+------------------------------*/
+.upload-drop-zone {
+  border: 2px dashed #adb5bd;
+  border-radius: 8px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  background-color: #f8f9fa;
+}
+
+.upload-drop-zone:hover,
+.upload-drop-zone.dragover {
+  border-color: #0d6efd;
+  background-color: #e8f0fe;
+}
+
+.upload-drop-zone.dragover {
+  border-style: solid;
+}
+
+.upload-drop-icon {
+  font-size: 2rem;
+  color: #adb5bd;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.upload-drop-zone:hover .upload-drop-icon,
+.upload-drop-zone.dragover .upload-drop-icon {
+  color: #0d6efd;
+}
+
+.upload-drop-text {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.upload-drop-browse {
+  color: #0d6efd;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.upload-drop-hint {
+  color: #adb5bd;
+  font-size: 0.78rem;
+}
+
+.upload-preview-wrap {
+  position: relative;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.upload-preview-img {
+  max-height: 160px;
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  object-fit: cover;
+}
+
+.upload-remove-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #dc3545;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.upload-remove-btn:hover {
+  color: #a71d2a;
+}
+
 /* About Section Content Styling
 ------------------------------*/
 .about-content {
@@ -1537,14 +1619,6 @@ section,
   animation: fadeInDown 1s both 0.2s;
 }
 
-@media (min-width: 1024px) {
-
-  .hero h2,
-  .hero p {
-    max-width: 60%;
-  }
-}
-
 .hero .btn-get-started {
   color: var(--contrast-color);
   background: var(--accent-color);
@@ -1667,6 +1741,55 @@ section,
   position: absolute;
   left: calc(50% - 47px);
   top: calc(50% - 47px);
+}
+
+/*--------------------------------------------------------------
+# Counter Dashboard (within About section)
+--------------------------------------------------------------*/
+.about .counter-dashboard {
+  padding: 50px 0 30px 0;
+}
+
+.about .counter-dashboard i {
+  background-color: var(--surface-color);
+  color: var(--accent-color);
+  box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.1);
+  width: 54px;
+  height: 54px;
+  font-size: 24px;
+  border-radius: 50px;
+  border: 2px solid var(--background-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.about .counter-dashboard .stats-item {
+  background-color: var(--surface-color);
+  margin-top: -27px;
+  padding: 30px 30px 25px 30px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  box-shadow: 0px 2px 35px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  z-index: 0;
+}
+
+.about .counter-dashboard .stats-item span {
+  font-size: 36px;
+  display: block;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--default-color), transparent 20%);
+}
+
+.about .counter-dashboard .stats-item p {
+  padding: 0;
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: 16px;
 }
 
 /*--------------------------------------------------------------

@@ -119,7 +119,7 @@
             <span class="title-word highlight">Kindness</span>
             <span class="title-word highlight">Coin</span>
           </h1>
-          <p class="hero-subtitle">One Coin. One Story. One Ripple of Change.</p>
+          <p class="hero-subtitle w-100">One Coin. One Story. One Ripple of Change.</p>
           <div class="hero-cta">
             <a href="#kindness" class="btn-hero-primary">Start Your Journey</a>
             <a href="#map" class="btn-hero-secondary">Track a Coin</a>
@@ -138,11 +138,52 @@
 
     <!-- About Section -->
     <section id="about" class="about section">
+      <!-- Counter Dashboard -->
+      <div class="container counter-dashboard" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4 justify-content-center">
 
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <!-- <h2>About</h2> -->
-      </div><!-- End Section Title -->
+          <div class="col-lg-3 col-md-6">
+            <div class="text-center">
+              <i class="bi bi-people-fill"></i>
+              <div class="stats-item">
+                <span data-purecounter-start="0" data-purecounter-end="512" data-purecounter-duration="2" class="purecounter"></span>
+                <p>Lions Serving</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="text-center">
+              <i class="bi bi-building"></i>
+              <div class="stats-item">
+                <span data-purecounter-start="0" data-purecounter-end="128" data-purecounter-duration="2" class="purecounter"></span>
+                <p>Clubs</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="text-center">
+              <i class="bi bi-journal-text"></i>
+              <div class="stats-item">
+                <span data-purecounter-start="0" data-purecounter-end="347" data-purecounter-duration="2" class="purecounter"></span>
+                <p>Submitted Stories</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="text-center">
+              <i class="bi bi-book-half"></i>
+              <div class="stats-item">
+                <span data-purecounter-start="0" data-purecounter-end="215" data-purecounter-duration="2" class="purecounter"></span>
+                <p>Stories Published</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- End Counter Dashboard -->
       <div id="scroll-reveal-section-wrapper">
         <div class="animation-parent">
           <div class="scroll-container">
@@ -395,6 +436,21 @@
 								<label for="story" class="form-label">Your Story <span class="text-danger">*</span></label>
 								<textarea class="form-control" id="story" name="story" rows="6" placeholder="Tell us about your act of kindness or how kindness impacted your life..." required></textarea>
 							</div>
+							<div class="col-12">
+								<label class="form-label w-100">Attach an Image <span class="text-muted small">(JPEG only, optional)</span></label>
+								<div class="upload-drop-zone" id="uploadDropZone">
+									<i class="bi bi-image upload-drop-icon"></i>
+									<p class="upload-drop-text mb-1">Drag &amp; drop a JPEG here, or <span class="upload-drop-browse">click to browse</span></p>
+									<p class="upload-drop-hint mb-0">JPEG format only</p>
+									<input type="file" id="storyImage" name="storyImage" accept=".jpg,.jpeg,image/jpeg" class="d-none">
+								</div>
+								<div id="imagePreview" class="upload-preview-wrap d-none">
+									<img id="previewImg" src="" alt="Preview" class="upload-preview-img">
+									<button type="button" class="upload-remove-btn" id="removeImage" aria-label="Remove image">
+										<i class="bi bi-x-circle-fill"></i>
+									</button>
+								</div>
+							</div>
 						</div>
 					</form>
 
@@ -408,7 +464,7 @@
 					<div id="toastMessage" class="toast-message d-none">
 						<div class="toast-content">
 							<i class="bi bi-check-circle-fill text-success"></i>
-							<span>Thank you for sharing your story! A confirmation email has been sent.</span>
+							<span>Thank you for being part of Kindness...</span>
 						</div>
 					</div>
 

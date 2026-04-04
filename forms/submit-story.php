@@ -76,7 +76,49 @@ if (!is_dir($dataDir)) {
     mkdir($dataDir, 0755, true);
 }
 
-$csvRow = [$timestamp, $fullName, $email, $clubName, $clubLocation, $story];
+// --- Handle optional image upload ---
+$imagePath = '';
+
+if (isset($_FILES['storyImage']) && $_FILES['storyImage']['error'] === UPLOAD_ERR_OK) {
+    $file     = $_FILES['storyImage'];
+    $maxBytes = 5 * 1024 * 1024; // 5 MB
+
+    // Validate size
+    if ($file['size'] > $maxBytes) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'message' => 'Image must be 5 MB or smaller.']);
+        exit;
+    }
+
+    // Validate MIME type via finfo (not trusting client-supplied type)
+    $finfo    = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($file['tmp_name']);
+    if ($mimeType !== 'image/jpeg') {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'message' => 'Only JPEG images are accepted.']);
+        exit;
+    }
+
+    // Build safe filename: timestamp + random hex + .jpg
+    $uploadsDir = __DIR__ . '/data/uploads';
+    if (!is_dir($uploadsDir)) {
+        mkdir($uploadsDir, 0755, true);
+    }
+
+    $safeFilename = date('Ymd_His') . '_' . bin2hex(random_bytes(6)) . '.jpg';
+    $destPath     = $uploadsDir . '/' . $safeFilename;
+
+    if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Failed to save the uploaded image. Please try again.']);
+        exit;
+    }
+
+    // Store relative path (relative to project root) in CSV
+    $imagePath = 'forms/data/uploads/' . $safeFilename;
+}
+
+$csvRow = [$timestamp, $fullName, $email, $clubName, $clubLocation, $story, $imagePath];
 
 $fp = fopen($csvPath, 'a');
 if ($fp === false) {

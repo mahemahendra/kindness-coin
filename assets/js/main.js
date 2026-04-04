@@ -222,6 +222,80 @@
 
   const errorMessage = document.getElementById('errorMessage');
 
+  // --- Image Upload / Drag-and-Drop ---
+  const dropZone    = document.getElementById('uploadDropZone');
+  const fileInput   = document.getElementById('storyImage');
+  const imagePreview = document.getElementById('imagePreview');
+  const previewImg  = document.getElementById('previewImg');
+  const removeImage = document.getElementById('removeImage');
+
+  function isValidJpeg(file) {
+    return file && (file.type === 'image/jpeg');
+  }
+
+  function showPreview(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      previewImg.src = e.target.result;
+      imagePreview.classList.remove('d-none');
+      dropZone.classList.add('d-none');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetUpload() {
+    fileInput.value = '';
+    previewImg.src = '';
+    imagePreview.classList.add('d-none');
+    dropZone.classList.remove('d-none');
+  }
+
+  if (dropZone && fileInput) {
+    // Click on zone opens file picker
+    dropZone.addEventListener('click', function() {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function() {
+      var file = fileInput.files[0];
+      if (!isValidJpeg(file)) {
+        fileInput.value = '';
+        alert('Please select a JPEG image (.jpg / .jpeg).');
+        return;
+      }
+      showPreview(file);
+    });
+
+    // Drag-and-drop events
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', function() {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      var file = e.dataTransfer.files[0];
+      if (!isValidJpeg(file)) {
+        alert('Please drop a JPEG image (.jpg / .jpeg).');
+        return;
+      }
+      // Assign to input so FormData picks it up
+      var dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      showPreview(file);
+    });
+
+    removeImage.addEventListener('click', function() {
+      resetUpload();
+    });
+  }
+
   if (submitStoryBtn && storyForm) {
     submitStoryBtn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -262,6 +336,7 @@
           // Reset form after 2 seconds and close modal
           setTimeout(function() {
             storyForm.reset();
+            resetUpload();
             storyForm.classList.remove('d-none');
             toastMessage.classList.add('d-none');
             submitStoryBtn.disabled = false;
@@ -296,6 +371,7 @@
     // Reset form when modal is closed
     document.getElementById('storyModal').addEventListener('hidden.bs.modal', function() {
       storyForm.reset();
+      resetUpload();
       storyForm.classList.remove('d-none');
       formLoader.classList.add('d-none');
       toastMessage.classList.add('d-none');
