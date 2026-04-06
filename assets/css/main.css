@@ -599,8 +599,7 @@ body {
 /* Toast Message
 ------------------------------*/
 .toast-message {
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
+  background: none;
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
@@ -610,10 +609,35 @@ body {
 .toast-content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
   font-size: 1rem;
   color: #155724;
   font-weight: 600;
+}
+
+.toast-success-gif {
+  display: block;
+  height: auto;
+  border-radius: 4px;
+  max-width: 100%;
+}
+
+.toast-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #155724;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.25rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.toast-close-btn:hover {
+  opacity: 1;
 }
 
 .toast-content i {

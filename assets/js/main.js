@@ -330,22 +330,8 @@
         formLoader.classList.add('d-none');
 
         if (result.data.success) {
-          // Show success toast
+          // Show success toast — stays until user closes it
           toastMessage.classList.remove('d-none');
-
-          // Reset form after 2 seconds and close modal
-          setTimeout(function() {
-            storyForm.reset();
-            resetUpload();
-            storyForm.classList.remove('d-none');
-            toastMessage.classList.add('d-none');
-            submitStoryBtn.disabled = false;
-
-            var modal = bootstrap.Modal.getInstance(document.getElementById('storyModal'));
-            if (modal) {
-              modal.hide();
-            }
-          }, 2500);
         } else {
           // Show error, restore form
           storyForm.classList.remove('d-none');
@@ -367,6 +353,20 @@
         }
       });
     });
+
+    // Toast close button — resets form and closes modal
+    var toastCloseBtn = document.getElementById('toastCloseBtn');
+    if (toastCloseBtn) {
+      toastCloseBtn.addEventListener('click', function() {
+        toastMessage.classList.add('d-none');
+        storyForm.reset();
+        resetUpload();
+        storyForm.classList.remove('d-none');
+        submitStoryBtn.disabled = false;
+        var modal = bootstrap.Modal.getInstance(document.getElementById('storyModal'));
+        if (modal) modal.hide();
+      });
+    }
 
     // Reset form when modal is closed
     document.getElementById('storyModal').addEventListener('hidden.bs.modal', function() {
