@@ -104,8 +104,8 @@
         <!-- Animated Coin Container -->
         <div id="animatedCoin" class="animated-coin-container">
           <div class="coin">
-            <img src="assets/img/coin1.png" alt="Kindness Coin Front" class="coin-face coin-front">
-            <img src="assets/img/coin2.png" alt="Kindness Coin Back" class="coin-face coin-back">
+            <img src="assets/img/coin1.jpeg" alt="Kindness Coin Front" class="coin-face coin-front">
+            <img src="assets/img/coin2.jpeg" alt="Kindness Coin Back" class="coin-face coin-back">
           </div>
         </div>
         
@@ -430,6 +430,18 @@
 								<label for="clubLocation" class="form-label">Club Location</label>
 								<input type="text" class="form-control" id="clubLocation" name="clubLocation">
 							</div>
+							<div class="col-md-6">
+								<label for="country" class="form-label">Country</label>
+								<select class="form-control" id="country" name="country">
+									<option value="">Select Country</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<label for="stateCounty" class="form-label">State / County</label>
+								<select class="form-control" id="stateCounty" name="stateCounty" disabled>
+									<option value="">Select Country First</option>
+								</select>
+							</div>
 							<div class="col-12">
 								<label for="story" class="form-label">Your Story <span class="text-danger">*</span></label>
 								<textarea class="form-control" id="story" name="story" rows="4" placeholder="Tell us about your act of kindness or how kindness impacted your life..." required></textarea>
@@ -680,6 +692,69 @@
       }
     }
   </script>
+  <!-- Country / State population Script -->
+  <script>
+    (function () {
+      const countrySelect = document.getElementById('country');
+      const stateSelect = document.getElementById('stateCounty');
+
+      // Load country list from REST Countries (reliable, no API key)
+      fetch('https://restcountries.com/v3.1/all?fields=name')
+        .then(res => res.json())
+        .then(data => {
+          const sorted = data
+            .map(c => c.name.common)
+            .sort((a, b) => a.localeCompare(b));
+          sorted.forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            countrySelect.appendChild(opt);
+          });
+        })
+        .catch(() => {});
+
+      // Load states on-demand when country is selected
+      countrySelect.addEventListener('change', function () {
+        const country = this.value;
+        stateSelect.innerHTML = '<option value="">Loading...</option>';
+        stateSelect.disabled = true;
+
+        if (!country) {
+          stateSelect.innerHTML = '<option value="">Select Country First</option>';
+          return;
+        }
+
+        fetch('https://countriesnow.space/api/v0.1/countries/states', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ country: country })
+        })
+          .then(res => res.json())
+          .then(data => {
+            const states = (!data.error && data.data && data.data.states) ? data.data.states : [];
+            if (states.length > 0) {
+              stateSelect.innerHTML = '<option value="">Select State / County</option>';
+              states.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.name;
+                opt.textContent = s.name;
+                stateSelect.appendChild(opt);
+              });
+              stateSelect.disabled = false;
+            } else {
+              stateSelect.innerHTML = '<option value="">No states available</option>';
+              stateSelect.disabled = true;
+            }
+          })
+          .catch(() => {
+            stateSelect.innerHTML = '<option value="">Unable to load states</option>';
+            stateSelect.disabled = true;
+          });
+      });
+    })();
+  </script>
+
 </body>
 
 </html>
