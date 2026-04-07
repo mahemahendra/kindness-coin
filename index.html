@@ -116,6 +116,7 @@
             <span class="title-word">to</span>
             <span class="title-word highlight">Kindness</span>
             <span class="title-word highlight">Coin</span>
+            <span class="title-word">Challenge</span>
           </h1>
           <p class="hero-subtitle w-100">One Coin. One Story. One Ripple of Change.</p>
           <div class="hero-cta">
@@ -288,35 +289,10 @@
           <p style="color: #ccc;">Track the journey of kindness coins across the globe</p>
         </div>
         
-        <!-- Coin Code Input Section -->
-        <div class="row justify-content-center mb-4">
-          <div class="col-lg-6">
-            <div class="city-input-container">
-              <div class="input-group">
-                <input type="text" id="coinCodeInput" class="form-control" placeholder="Enter 5-digit coin code" maxlength="5" style="background: #2a2a2a; border: 1px solid #555; color: #fff;">
-                <button class="btn btn-primary" type="button" id="addCoinBtn">
-                  <i class="bi bi-coin"></i> Track Coin
-                </button>
-              </div>
-              <div id="coinError" class="text-danger mt-2" style="display: none;"></div>
-              <small class="text-muted mt-2 d-block" style="color: #aaa !important;">Enter a 5-digit code to track where your kindness coin has traveled</small>
-            </div>
-          </div>
-        </div>
-        
         <!-- Map Container -->
         <div class="row">
           <div class="col-12">
             <div id="worldMap" style="height: 60vh; width: 100%; border-radius: 10px; border: 2px solid #444;"></div>
-          </div>
-        </div>
-        
-        <!-- Map Legend -->
-        <div class="row mt-3">
-          <div class="col-12 text-center">
-            <small style="color: #ccc;">
-              <i class="bi bi-coin text-primary"></i> Tracked Kindness Coins
-            </small>
           </div>
         </div>
       </div>
@@ -544,36 +520,6 @@
   <script>
     // Initialize map
     let map;
-    let userMarkers = [];
-    
-    // Major cities mapped to 5-digit codes
-    const cityDatabase = {
-      '10001': {lat: 40.7128, lng: -74.0060, name: 'New York, USA', country: 'United States'},
-      '10002': {lat: 51.5074, lng: -0.1278, name: 'London, UK', country: 'United Kingdom'},
-      '10003': {lat: 35.6762, lng: 139.6503, name: 'Tokyo, Japan', country: 'Japan'},
-      '10004': {lat: -33.8688, lng: 151.2093, name: 'Sydney, Australia', country: 'Australia'},
-      '10005': {lat: 19.0760, lng: 72.8777, name: 'Mumbai, India', country: 'India'},
-      '10006': {lat: 48.8566, lng: 2.3522, name: 'Paris, France', country: 'France'},
-      '10007': {lat: 52.5200, lng: 13.4050, name: 'Berlin, Germany', country: 'Germany'},
-      '10008': {lat: 55.7558, lng: 37.6173, name: 'Moscow, Russia', country: 'Russia'},
-      '10009': {lat: 39.9042, lng: 116.4074, name: 'Beijing, China', country: 'China'},
-      '10010': {lat: -23.5505, lng: -46.6333, name: 'São Paulo, Brazil', country: 'Brazil'},
-      '10011': {lat: 25.2048, lng: 55.2708, name: 'Dubai, UAE', country: 'United Arab Emirates'},
-      '10012': {lat: 1.3521, lng: 103.8198, name: 'Singapore', country: 'Singapore'},
-      '10013': {lat: -34.6037, lng: -58.3816, name: 'Buenos Aires, Argentina', country: 'Argentina'},
-      '10014': {lat: 30.0444, lng: 31.2357, name: 'Cairo, Egypt', country: 'Egypt'},
-      '10015': {lat: -26.2041, lng: 28.0473, name: 'Johannesburg, South Africa', country: 'South Africa'},
-      '10016': {lat: 37.5665, lng: 126.9780, name: 'Seoul, South Korea', country: 'South Korea'},
-      '10017': {lat: 13.7563, lng: 100.5018, name: 'Bangkok, Thailand', country: 'Thailand'},
-      '10018': {lat: 41.9028, lng: 12.4964, name: 'Rome, Italy', country: 'Italy'},
-      '10019': {lat: 40.4168, lng: -3.7038, name: 'Madrid, Spain', country: 'Spain'},
-      '10020': {lat: 59.9139, lng: 10.7522, name: 'Oslo, Norway', country: 'Norway'},
-      '10021': {lat: 45.4215, lng: -75.6972, name: 'Ottawa, Canada', country: 'Canada'},
-      '10022': {lat: -37.8136, lng: 144.9631, name: 'Melbourne, Australia', country: 'Australia'},
-      '10023': {lat: 22.3193, lng: 114.1694, name: 'Hong Kong', country: 'Hong Kong'},
-      '10024': {lat: 31.2304, lng: 121.4737, name: 'Shanghai, China', country: 'China'},
-      '10025': {lat: 28.6139, lng: 77.2090, name: 'New Delhi, India', country: 'India'}
-    };
     
     document.addEventListener('DOMContentLoaded', function() {
       // Initialize the map
@@ -590,106 +536,7 @@
         subdomains: 'abcd',
         maxZoom: 19
       }).addTo(map);
-      
-      // Sample kindness locations removed - map will only show user-tracked coins
-      
-      // Coin code input functionality
-      const coinCodeInput = document.getElementById('coinCodeInput');
-      const addCoinBtn = document.getElementById('addCoinBtn');
-      const coinError = document.getElementById('coinError');
-      
-      // Only allow numbers in input
-      coinCodeInput.addEventListener('input', function(e) {
-        this.value = this.value.replace(/[^0-9]/g, '');
-      });
-      
-      addCoinBtn.addEventListener('click', trackCoin);
-      coinCodeInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          trackCoin();
-        }
-      });
-      
-      function trackCoin() {
-        const coinCode = coinCodeInput.value.trim();
-        
-        if (!coinCode) {
-          showError('Please enter a 5-digit coin code');
-          return;
-        }
-        
-        if (coinCode.length !== 5) {
-          showError('Coin code must be exactly 5 digits');
-          return;
-        }
-        
-        // Look up the city based on coin code
-        const cityData = cityDatabase[coinCode];
-        
-        if (cityData) {
-          // Create coin marker
-          const marker = L.marker([cityData.lat, cityData.lng], {
-            icon: L.divIcon({
-              className: 'custom-marker coin-marker',
-              html: '<i class="bi bi-coin" style="color: #0d6efd; font-size: 28px; text-shadow: 0 0 8px rgba(13, 110, 253, 0.5);"></i>',
-              iconSize: [28, 28],
-              iconAnchor: [14, 28]
-            })
-          }).addTo(map);
-          
-          const markerIndex = userMarkers.length;
-          marker.bindPopup(`
-            <div style="color: #000; padding: 8px; min-width: 200px;">
-              <h6 style="margin: 0 0 8px 0; color: #0d6efd;"><i class="bi bi-coin"></i> Kindness Coin Journey</h6>
-              <p style="margin: 5px 0;"><strong>Location:</strong> ${cityData.name}</p>
-              <p style="margin: 5px 0;"><strong>Coin Code:</strong> #${coinCode}</p>
-              <p style="margin: 8px 0 5px 0; font-style: italic; color: #666;">A kindness coin has traveled to this beautiful location, spreading compassion across the globe! ✨</p>
-              <button onclick="removeMarker(${markerIndex})" style="margin-top: 8px; background: #dc3545; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Remove</button>
-            </div>
-          `);
-          
-          userMarkers.push(marker);
-          
-          // Pan to the new marker with smooth animation
-          map.flyTo([cityData.lat, cityData.lng], 6, {
-            duration: 2,
-            easeLinearity: 0.25
-          });
-          
-          // Clear input
-          coinCodeInput.value = '';
-          hideError();
-          
-          // Show popup after animation
-          setTimeout(() => {
-            marker.openPopup();
-          }, 2000);
-          
-        } else {
-          showError('Invalid coin code. Please check and try again.');
-        }
-      }
-      
-      function showError(message) {
-        coinError.textContent = message;
-        coinError.style.display = 'block';
-        setTimeout(() => {
-          hideError();
-        }, 5000);
-      }
-      
-      function hideError() {
-        coinError.style.display = 'none';
-      }
     });
-    
-    // Function to remove user markers
-    function removeMarker(index) {
-      if (userMarkers[index]) {
-        map.removeLayer(userMarkers[index]);
-        userMarkers.splice(index, 1);
-      }
-    }
   </script>
   <!-- Country / State population Script -->
   <script>
