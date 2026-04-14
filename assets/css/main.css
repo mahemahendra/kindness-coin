@@ -2543,13 +2543,13 @@ section,
 
 /* --- Scoped Scroll Reveal Text Animation --- */
 #scroll-reveal-section-wrapper .animation-parent {
-    height: 60vh;
+    height: 200vh;
 }
 
 #scroll-reveal-section-wrapper .scroll-container {
     position: sticky;
     top: 0;
-    height: 60vh;
+    height: 100vh;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -2559,11 +2559,11 @@ section,
 #scroll-reveal-section-wrapper .text-wrapper {
     width: 80%;
     max-width: 900px;
-    text-align: justify;
+    text-align: left;
     font-family: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
     font-size: clamp(1.2rem, 3vw, 2rem);
     font-weight: 300;
-    line-height: 1.4;
+    line-height: 1.7;
     will-change: transform, opacity, letter-spacing, word-spacing;
 }
 

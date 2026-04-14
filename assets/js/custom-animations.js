@@ -43,12 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
             word.style.transform = `translate(${currentX}vw, ${currentY}vh) rotate(${rot}deg)`;
 
             // --- CORRECTED: Opacity animation timing ---
-            const opacityDelay = 0.15; 
-            // Reverted to the wider stagger range
-            const staggerRange = 0.5; 
+            const opacityDelay = 0.1; 
+            const staggerRange = 0.7; 
             const wordAnimationStart = opacityDelay + (index / words.length) * staggerRange;
-            // Kept the longer duration for a slower individual fade
-            const wordAnimationDuration = 0.6; 
+            const wordAnimationDuration = 0.4; 
             
             let wordProgress = (globalProgress - wordAnimationStart) / wordAnimationDuration;
             wordProgress = Math.max(0, Math.min(1, wordProgress));
@@ -58,10 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
             word.style.opacity = currentOpacity;
         });
 
-        // Spacing animations
-        const currentLetterSpacing = lerp(2, 1.5, easedGlobalProgress);
+        // Spacing animations — start spread, end at natural paragraph values
+        const currentLetterSpacing = lerp(3, 0, easedGlobalProgress);
         textWrapper.style.letterSpacing = `${currentLetterSpacing}px`;
-        const currentWordSpacing = lerp(0, 10, easedGlobalProgress);
+        const currentWordSpacing = lerp(15, 0, easedGlobalProgress);
         textWrapper.style.wordSpacing = `${currentWordSpacing}px`;
     }
 
@@ -71,8 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
             word.style.transform = `translate(${x}vw, ${y}vh) rotate(${rot}deg)`;
             word.style.opacity = initialOpacity;
         });
-        textWrapper.style.letterSpacing = '2px';
-        textWrapper.style.wordSpacing = '0px';
+        textWrapper.style.letterSpacing = '3px';
+        textWrapper.style.wordSpacing = '15px';
     }
     
     setInitialState();
