@@ -215,7 +215,7 @@ try {
                 <p style='margin: 0; line-height: 1.6; color: #555;'>" . nl2br(htmlspecialchars($story)) . "</p>
             </div>
             <p style='color: #555;'>
-                <strong>One Coin. One Story. One Ripple of Change.</strong>
+                <strong>One Coin. Many Hands. One Movement.</strong>
             </p>
             <hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'>
             <p style='color: #999; font-size: 12px;'>
@@ -223,7 +223,7 @@ try {
             </p>
         </div>
     ";
-    $mail->AltBody = "Thank you, {$fullName}!\n\nWe have received your kindness story and are truly inspired by your journey.\n\nYour Story:\n{$story}\n\nOne Coin. One Story. One Ripple of Change.\n\n- Kindness Coin Team";
+    $mail->AltBody = "Thank you, {$fullName}!\n\nWe have received your kindness story and are truly inspired by your journey.\n\nYour Story:\n{$story}\n\nOne Coin. Many Hands. One Movement.\n\n- Kindness Coin Team";
     $mail->send();
 } catch (Exception $e) {
     $emailErrors[] = 'Acknowledgment email failed: ' . $mail->ErrorInfo;
