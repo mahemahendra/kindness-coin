@@ -205,25 +205,38 @@ try {
     $mail->Subject = 'Thank you for sharing your kindness story!';
     $mail->Body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
-            <h2 style='color: #0d6efd;'>Thank You, " . htmlspecialchars($fullName) . "!</h2>
+            <h2 style='color: #0d6efd; border-bottom: 2px solid #0d6efd; padding-bottom: 10px;'>
+                Thank you&#8212;truly!
+            </h2>
             <p style='font-size: 16px; line-height: 1.6; color: #333;'>
-                We have received your kindness story and are truly inspired by your journey. 
-                Your story will help spread the ripple of kindness across the world.
+                Dear " . htmlspecialchars($fullName) . ",
             </p>
-            <div style='margin: 20px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #0d6efd; border-radius: 4px;'>
-                <h3 style='margin: 0 0 10px 0; color: #333;'>Your Story</h3>
-                <p style='margin: 0; line-height: 1.6; color: #555;'>" . nl2br(htmlspecialchars($story)) . "</p>
-            </div>
-            <p style='color: #555;'>
-                <strong>One Coin. Many Hands. One Movement.</strong>
+            <p style='font-size: 16px; line-height: 1.6; color: #333;'>
+                I just wanted to personally appreciate you for being part of the Kindness Coin journey. The fact that you chose to carry this forward means more than words can express.
             </p>
-            <hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'>
+            <p style='font-size: 16px; line-height: 1.6; color: #333;'>
+                Sometimes, the smallest acts create the biggest impact. What you&#8217;ve done may seem simple, but it has the power to brighten someone&#8217;s day, lift a spirit, and quietly inspire others to do the same. That&#8217;s how kindness grows&#8212;one person at a time.
+            </p>
+            <p style='font-size: 16px; line-height: 1.6; color: #333;'>
+                It&#8217;s always heartening to see Lions like you leading with heart. You&#8217;re now part of a beautiful chain of goodwill that is spreading far beyond what we can see.
+            </p>
+            <p style='font-size: 16px; line-height: 1.6; color: #333;'>
+                Thank you for being a part of this. I&#8217;m certain the kindness you&#8217;ve shared will continue to travel and touch many more lives.
+            </p>
+            <p style='font-size: 16px; line-height: 1.6; color: #333; margin-top: 30px;'>
+                With warm appreciation,
+            </p>
+            <p style='font-size: 16px; line-height: 1.6; color: #333; margin: 4px 0;'>
+                <strong>Your Friend in Service,</strong><br>
+                <strong>PID Vijay Raju</strong>
+            </p>
+            <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
             <p style='color: #999; font-size: 12px;'>
                 This is an automated message from Kindness Coin. Please do not reply to this email.
             </p>
         </div>
     ";
-    $mail->AltBody = "Thank you, {$fullName}!\n\nWe have received your kindness story and are truly inspired by your journey.\n\nYour Story:\n{$story}\n\nOne Coin. Many Hands. One Movement.\n\n- Kindness Coin Team";
+    $mail->AltBody = "Thank you—truly!\n\nDear {$fullName},\n\nI just wanted to personally appreciate you for being part of the Kindness Coin journey. The fact that you chose to carry this forward means more than words can express.\n\nSometimes, the smallest acts create the biggest impact. What you've done may seem simple, but it has the power to brighten someone's day, lift a spirit, and quietly inspire others to do the same. That's how kindness grows—one person at a time.\n\nIt's always heartening to see Lions like you leading with heart. You're now part of a beautiful chain of goodwill that is spreading far beyond what we can see.\n\nThank you for being a part of this. I'm certain the kindness you've shared will continue to travel and touch many more lives.\n\nWith warm appreciation,\n\nYour Friend in Service,\nPID Vijay Raju";
     $mail->send();
 } catch (Exception $e) {
     $emailErrors[] = 'Acknowledgment email failed: ' . $mail->ErrorInfo;
