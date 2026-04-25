@@ -147,6 +147,7 @@ function createMailer(array $config): PHPMailer
     $mail->Password   = $config['smtp']['password'];
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = $config['smtp']['port'];
+    $mail->Timeout    = 10; // fail fast if SMTP is unreachable (prevents max_execution_time 500s)
 
     $mail->setFrom($config['sender_email'], $config['sender_name']);
     $mail->isHTML(true);
@@ -158,6 +159,7 @@ function createMailer(array $config): PHPMailer
 $emailErrors = [];
 
 // --- 1. Admin Notification Email ---
+$mail = null;
 try {
     $mail = createMailer($config);
     $mail->addAddress($config['admin_email']);
@@ -195,10 +197,11 @@ try {
     $mail->AltBody = "New story from {$fullName} ({$email})\nClub: {$clubName}\nLocation: {$clubLocation}\n\nStory:\n{$story}\n\nSubmitted: {$timestamp}";
     $mail->send();
 } catch (Exception $e) {
-    $emailErrors[] = 'Admin email failed: ' . $mail->ErrorInfo;
+    $emailErrors[] = 'Admin email failed: ' . ($mail ? $mail->ErrorInfo : $e->getMessage());
 }
 
 // --- 2. User Acknowledgment Email ---
+$mail = null;
 try {
     $mail = createMailer($config);
     $mail->addAddress($email, $fullName);
@@ -239,7 +242,7 @@ try {
     $mail->AltBody = "Thank you—truly!\n\nDear {$fullName},\n\nI just wanted to personally appreciate you for being part of the Kindness Coin journey. The fact that you chose to carry this forward means more than words can express.\n\nSometimes, the smallest acts create the biggest impact. What you've done may seem simple, but it has the power to brighten someone's day, lift a spirit, and quietly inspire others to do the same. That's how kindness grows—one person at a time.\n\nIt's always heartening to see Lions like you leading with heart. You're now part of a beautiful chain of goodwill that is spreading far beyond what we can see.\n\nThank you for being a part of this. I'm certain the kindness you've shared will continue to travel and touch many more lives.\n\nWith warm appreciation,\n\nYour Friend in Service,\nPID Vijay Raju";
     $mail->send();
 } catch (Exception $e) {
-    $emailErrors[] = 'Acknowledgment email failed: ' . $mail->ErrorInfo;
+    $emailErrors[] = 'Acknowledgment email failed: ' . ($mail ? $mail->ErrorInfo : $e->getMessage());
 }
 
 // Update rate limit timestamp
