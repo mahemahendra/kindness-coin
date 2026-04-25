@@ -7,6 +7,21 @@
  * and user acknowledgment emails via PHPMailer.
  */
 
+// session_start must come before any header() call
+session_start();
+
+// Catch fatal errors and return JSON instead of a blank 500
+register_shutdown_function(function () {
+    $err = error_get_last();
+    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        if (!headers_sent()) {
+            header('Content-Type: application/json');
+            http_response_code(500);
+        }
+        echo json_encode(['success' => false, 'message' => 'Server error: ' . $err['message']]);
+    }
+});
+
 // Composer autoloader (PHPMailer)
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -28,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Simple rate limiting via session
-session_start();
 $now = time();
 if (isset($_SESSION['last_story_submit']) && ($now - $_SESSION['last_story_submit']) < 60) {
     http_response_code(429);
