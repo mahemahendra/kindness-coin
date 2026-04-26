@@ -27,11 +27,14 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# PHP config with credentials — never commit
+forms/config.php
+
 # Build outputs
 dist/
 build/
-*.min.js
-*.min.css
+dist/*.min.js
+dist/*.min.css
 
 # Cache files
 .cache/
@@ -57,7 +60,7 @@ secrets.json
 *.pem
 
 # PHP composer
-vendor/
+/vendor/
 composer.phar
 
 # SMTP credentials (sensitive)
@@ -68,3 +71,5 @@ forms/data/stories.csv
 
 # Image thumbnails
 *.thumb
+
+/forms/data/uploads/

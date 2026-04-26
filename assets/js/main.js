@@ -330,8 +330,14 @@
         formLoader.classList.add('d-none');
 
         if (result.data.success) {
-          // Show success toast — stays until user closes it
-          toastMessage.classList.remove('d-none');
+          // Close modal, then show page-level toast after it finishes hiding
+          var storyModalEl = document.getElementById('storyModal');
+          storyModalEl.addEventListener('hidden.bs.modal', function showToast() {
+            storyModalEl.removeEventListener('hidden.bs.modal', showToast);
+            toastMessage.classList.remove('d-none');
+          });
+          var modal = bootstrap.Modal.getInstance(storyModalEl);
+          if (modal) modal.hide();
         } else {
           // Show error, restore form
           storyForm.classList.remove('d-none');
@@ -354,17 +360,11 @@
       });
     });
 
-    // Toast close button — resets form and closes modal
+    // Toast close button — hide the page-level toast
     var toastCloseBtn = document.getElementById('toastCloseBtn');
     if (toastCloseBtn) {
       toastCloseBtn.addEventListener('click', function() {
         toastMessage.classList.add('d-none');
-        storyForm.reset();
-        resetUpload();
-        storyForm.classList.remove('d-none');
-        submitStoryBtn.disabled = false;
-        var modal = bootstrap.Modal.getInstance(document.getElementById('storyModal'));
-        if (modal) modal.hide();
       });
     }
 
@@ -374,7 +374,6 @@
       resetUpload();
       storyForm.classList.remove('d-none');
       formLoader.classList.add('d-none');
-      toastMessage.classList.add('d-none');
       if (errorMessage) errorMessage.classList.add('d-none');
       submitStoryBtn.disabled = false;
     });

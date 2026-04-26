@@ -120,33 +120,28 @@
 
       <div class="container">
 
-        <!-- Story 1 -->
-        <div class="row gy-4 justify-content-center mb-5" data-aos="fade-up" data-aos-delay="100">
-          <div class="col-lg-10">
-            <div class="about-content">
-              <div class="highlight-box mb-4">
-                <h3><i class="bi bi-heart-fill text-danger me-2"></i>I Refused to Let Hope Slip Away</h3>
+        <!-- Stories Side by Side -->
+        <div class="row gy-4 justify-content-center mb-5">
+
+          <!-- Story 1 -->
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="story-card">
+              <div class="story-title">
+                <i class="bi bi-heart-fill text-danger"></i>
+                <h3>I Refused to Let Hope Slip Away</h3>
               </div>
               <p>Two decades ago, during a Zone's social event, a frail young boy was brought to me. His eyes carried the fear of pain far beyond his years. Diagnosed with a severe form of cancer, doctors had given up hope. The treatment required was expensive, and without chemotherapy, survival was almost impossible.</p>
               <p>People stood in silence, unsure of what to do. "He won't survive," many said. But I refused to accept that fate and felt that he deserved a chance. Driven by compassion and an unshakable belief in the power of community, I mobilized a fundraiser. He rallied hearts, gathered resources, and ensured the boy received the life-saving chemotherapy he desperately needed.</p>
               <p>Today, that boy is embracing life, thriving, and a living testament to what hope, kindness, and timely action can do! This was not just a story of saving a life; it was a promise fulfilled, a belief restored, and a quiet reminder of why humanity still wins. Because in that moment, I chose hope over doubt and in doing so, I witnessed a life rewritten into a future full of possibilities.</p>
             </div>
           </div>
-        </div>
 
-        <!-- Divider -->
-        <div class="row justify-content-center mb-5" data-aos="fade-up" data-aos-delay="150">
-          <div class="col-lg-10">
-            <hr class="opacity-25">
-          </div>
-        </div>
-
-        <!-- Story 2 -->
-        <div class="row gy-4 justify-content-center mb-5" data-aos="fade-up" data-aos-delay="200">
-          <div class="col-lg-10">
-            <div class="about-content">
-              <div class="highlight-box mb-4">
-                <h3><i class="bi bi-eye-fill text-primary me-2"></i>The Day Her Silence Spoke Louder Than Words</h3>
+          <!-- Story 2 -->
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="story-card">
+              <div class="story-title">
+                <i class="bi bi-eye-fill text-primary"></i>
+                <h3>The Day Her Silence Spoke Louder Than Words</h3>
               </div>
               <p>At one of the many cataract camps organized by Lions Clubs International, the goal had always been clear; to bring light back into lives shadowed by preventable blindness. With limited resources, I pooled in funds to ensure that as many life-changing surgeries as possible could be conducted.</p>
               <p>Among the patients that day was an 80-year-old woman who had lived in darkness for years, with no family, no support, and no hope. Through the camp, her vision was restored.</p>
@@ -155,10 +150,53 @@
               <p>And sometimes, in giving light to others, I find my own purpose illuminated.</p>
             </div>
           </div>
+
         </div>
 
+        <!-- Community Stories Divider -->
+        <div class="row mt-5">
+          <div class="col-12">
+            <hr class="community-stories-divider">
+            <div class="community-stories-heading text-center mb-4">
+              <h3>Community Stories</h3>
+              <p class="text-muted">Stories shared by kindness coin recipients around the world</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar: category pills + sort dropdown -->
+        <div class="stories-filter-bar mb-4" id="storiesFilterBar">
+          <div class="stories-pills" id="storiesCategoryPills">
+            <!-- Category pills injected by JS -->
+          </div>
+          <div class="stories-sort-wrap">
+            <label for="storiesSort" class="visually-hidden">Sort by</label>
+            <select id="storiesSort" class="stories-sort-select">
+              <option value="latest">Latest</option>
+              <option value="oldest">Oldest</option>
+              <option value="name_asc">A&ndash;Z by Name</option>
+              <option value="country_asc">By Country</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dynamic Stories Grid -->
+        <div id="stories-grid" class="row gy-4"></div>
+
+        <!-- Infinite Scroll Sentinel + Spinner -->
+        <div id="stories-sentinel" class="stories-sentinel">
+          <div class="stories-spinner">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- End of Results -->
+        <p id="stories-end" class="stories-end-msg d-none">You&rsquo;ve seen all the stories.</p>
+
         <!-- CTA -->
-        <div class="row gy-4 justify-content-center mt-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="row gy-4 justify-content-center mt-5" data-aos="fade-up" data-aos-delay="300">
           <div class="col-lg-10">
             <div class="cta-box text-center">
               <h4 class="mb-2">Every act of kindness has a story.</h4>
@@ -171,6 +209,24 @@
       </div>
 
     </section><!-- /Stories Section -->
+
+    <!-- Read More Modal -->
+    <div class="modal fade" id="storyReadModal" tabindex="-1" aria-labelledby="storyReadModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="storyReadModalLabel">Story of Kindness</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="storyReadModalBody">
+            <!-- Populated by JS -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </main>
 
@@ -235,6 +291,291 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <!-- Community Stories: Infinite Scroll + Filters -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ---- State ----
+      var state = {
+        page:     1,
+        category: 'all',
+        sort:     'latest',
+        loading:  false,
+        hasMore:  true,
+      };
+
+      var grid     = document.getElementById('stories-grid');
+      var sentinel = document.getElementById('stories-sentinel');
+      var endMsg   = document.getElementById('stories-end');
+      var sortSel  = document.getElementById('storiesSort');
+      var pillsWrap = document.getElementById('storiesCategoryPills');
+
+      // ---- Utility: format date ----
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        var d = new Date(dateStr.replace(' ', 'T'));
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      }
+
+      // ---- Utility: truncate text ----
+      function truncate(text, maxChars) {
+        if (text.length <= maxChars) return text;
+        return text.slice(0, maxChars).replace(/\s+\S*$/, '') + '…';
+      }
+
+      // ---- Category icon map ----
+      var catIcons = {
+        'Childhood Cancer': 'bi-ribbon-fill',
+        'Diabetes':         'bi-droplet-fill',
+        'Disaster Relief':  'bi-house-exclamation-fill',
+        'Environment':      'bi-tree-fill',
+        'Humanitarian':     'bi-people-fill',
+        'Hunger':           'bi-egg-fried',
+        'Vision':           'bi-eye-fill',
+        'Youth':            'bi-person-hearts',
+      };
+      function catIcon(category) {
+        return catIcons[category] || 'bi-heart-fill';
+      }
+
+      // ---- Render a single card ----
+      function renderCard(s) {
+        var colDiv = document.createElement('div');
+        colDiv.className = 'col-xl-3 col-lg-4 col-md-6 col-12';
+
+        var imgHtml = '';
+        if (s.image_path) {
+          imgHtml = '<div class="story-pub-img">'
+            + '<img src="' + s.image_path + '" alt="Story image" loading="lazy" onerror="this.parentElement.style.display=\'none\'">'
+            + '</div>';
+        }
+
+        var catBadge = s.category
+          ? '<span class="story-cat-badge"><i class="bi ' + catIcon(s.category) + ' me-1"></i>' + s.category + '</span>'
+          : '';
+
+        var meta = [];
+        if (s.club_name)    meta.push('<i class="bi bi-people-fill me-1"></i>' + s.club_name);
+        if (s.country)      meta.push('<i class="bi bi-geo-alt-fill me-1"></i>' + s.country);
+        meta.push('<i class="bi bi-calendar3 me-1"></i>' + formatDate(s.submitted_at));
+
+        // Store JSON data on the card for modal use
+        var storyData = JSON.stringify({
+          id:           s.id,
+          full_name:    s.full_name,
+          club_name:    s.club_name,
+          country:      s.country,
+          state_county: s.state_county,
+          category:     s.category,
+          story:        s.story,
+          image_path:   s.image_path,
+          submitted_at: s.submitted_at,
+        }).replace(/'/g, '&#39;');
+
+        colDiv.innerHTML =
+          '<div class="story-pub-card h-100" role="button" tabindex="0" data-story=\'' + storyData + '\' aria-label="Read ' + s.full_name + '&#39;s story">'
+          + imgHtml
+          + '<div class="story-pub-body">'
+          +   catBadge
+          +   '<h5 class="story-pub-name">' + s.full_name + '</h5>'
+          +   '<p class="story-pub-excerpt">' + truncate(s.story, 150) + '</p>'
+          + '</div>'
+          + '<div class="story-pub-footer">'
+          +   '<div class="story-pub-meta">' + meta.join('<span class="meta-sep">·</span>') + '</div>'
+          + '</div>'
+          + '</div>';
+
+        return colDiv;
+      }
+
+      // ---- Open Read More modal ----
+      function openReadMore(s) {
+        document.getElementById('storyReadModalLabel').textContent = s.full_name + '\'s Story';
+
+        var imgHtml = '';
+        if (s.image_path) {
+          imgHtml = '<div class="story-modal-img mb-3">'
+            + '<img src="' + s.image_path + '" alt="Story image" class="img-fluid rounded" onerror="this.parentElement.style.display=\'none\'">'
+            + '</div>';
+        }
+
+        var metaItems = [];
+        if (s.category)     metaItems.push('<span><i class="bi ' + catIcon(s.category) + ' me-1"></i><strong>' + s.category + '</strong></span>');
+        if (s.club_name)    metaItems.push('<span><i class="bi bi-people-fill me-1"></i>' + s.club_name + '</span>');
+        if (s.country) {
+          var loc = s.country;
+          if (s.state_county) loc = s.state_county + ', ' + loc;
+          metaItems.push('<span><i class="bi bi-geo-alt-fill me-1"></i>' + loc + '</span>');
+        }
+        metaItems.push('<span><i class="bi bi-calendar3 me-1"></i>' + formatDate(s.submitted_at) + '</span>');
+
+        var storyParas = s.story.split('\n').filter(function(p){ return p.trim(); }).map(function(p){
+          return '<p>' + p + '</p>';
+        }).join('');
+        if (!storyParas) storyParas = '<p>' + s.story + '</p>';
+
+        document.getElementById('storyReadModalBody').innerHTML =
+          imgHtml
+          + '<div class="story-modal-meta mb-3">' + metaItems.join('') + '</div>'
+          + '<div class="story-modal-text">' + storyParas + '</div>';
+
+        var modal = new bootstrap.Modal(document.getElementById('storyReadModal'));
+        modal.show();
+      }
+
+      // ---- Fetch and render stories ----
+      function fetchStories(append) {
+        if (state.loading || (!append && state.page > 1 && !state.hasMore)) return;
+        if (append && !state.hasMore) return;
+
+        state.loading = true;
+        sentinel.style.display = 'flex';
+        endMsg.classList.add('d-none');
+
+        var url = 'forms/get-stories.php?page=' + state.page
+          + '&limit=12'
+          + '&category=' + encodeURIComponent(state.category)
+          + '&sort=' + encodeURIComponent(state.sort);
+
+        fetch(url)
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            state.loading = false;
+
+            if (!data.success) {
+              sentinel.style.display = 'none';
+              return;
+            }
+
+            if (!append) {
+              grid.innerHTML = '';
+            }
+
+            if (data.stories.length === 0 && !append) {
+              grid.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted">No stories found in this category yet.</p></div>';
+            }
+
+            data.stories.forEach(function (s) {
+              grid.appendChild(renderCard(s));
+            });
+
+            state.hasMore = data.has_more;
+            state.page++;
+
+            if (!state.hasMore) {
+              sentinel.style.display = 'none';
+              if (data.total > 0) endMsg.classList.remove('d-none');
+            } else {
+              sentinel.style.display = 'none'; // hide until observer fires again
+            }
+          })
+          .catch(function () {
+            state.loading = false;
+            sentinel.style.display = 'none';
+          });
+      }
+
+      // ---- Fetch categories and build pill buttons ----
+      function fetchCategories(callback) {
+        fetch('forms/get-categories.php')
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            pillsWrap.innerHTML = '';
+
+            // "All" pill
+            var allBtn = document.createElement('button');
+            allBtn.className = 'stories-filter-pill active';
+            allBtn.dataset.cat = 'all';
+            allBtn.textContent = 'All';
+            pillsWrap.appendChild(allBtn);
+
+            if (data.success && Array.isArray(data.categories)) {
+              data.categories.forEach(function (cat) {
+                var btn = document.createElement('button');
+                btn.className = 'stories-filter-pill';
+                btn.dataset.cat = cat;
+                var icon = catIcons[cat] || 'bi-heart-fill';
+                btn.innerHTML = '<i class="bi ' + icon + ' me-1"></i>' + cat;
+                pillsWrap.appendChild(btn);
+              });
+            }
+
+            if (typeof callback === 'function') callback();
+          })
+          .catch(function () {
+            // Still render "All" and call back on failure
+            pillsWrap.innerHTML = '<button class="stories-filter-pill active" data-cat="all">All</button>';
+            if (typeof callback === 'function') callback();
+          });
+      }
+
+      // ---- Reset and reload ----
+      function resetAndLoad() {
+        state.page    = 1;
+        state.hasMore = true;
+        fetchStories(false);
+      }
+
+      // ---- Pill click delegation ----
+      pillsWrap.addEventListener('click', function (e) {
+        var btn = e.target.closest('.stories-filter-pill');
+        if (!btn) return;
+        document.querySelectorAll('.stories-filter-pill').forEach(function (b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        state.category = btn.dataset.cat;
+        resetAndLoad();
+      });
+
+      // ---- Sort change ----
+      sortSel.addEventListener('change', function () {
+        state.sort = this.value;
+        resetAndLoad();
+      });
+
+      // ---- Card click / keyboard delegation ----
+      function handleCardOpen(e) {
+        var card = e.target.closest('.story-pub-card');
+        if (!card) return;
+        try {
+          var story = JSON.parse(card.dataset.story);
+          openReadMore(story);
+        } catch (_) {}
+      }
+
+      grid.addEventListener('click', handleCardOpen);
+
+      grid.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          var card = e.target.closest('.story-pub-card');
+          if (!card) return;
+          e.preventDefault();
+          handleCardOpen(e);
+        }
+      });
+
+      // ---- IntersectionObserver for infinite scroll ----
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && state.hasMore && !state.loading) {
+              fetchStories(true);
+            }
+          });
+        }, { rootMargin: '200px' });
+        observer.observe(sentinel);
+      }
+
+      // ---- Init ----
+      fetchCategories(function () {
+        fetchStories(false);
+      });
+
+    })();
+  </script>
 
 </body>
 

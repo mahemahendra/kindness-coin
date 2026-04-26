@@ -1,0 +1,37 @@
+<?php
+/**
+ * SMTP & Application Configuration — EXAMPLE FILE
+ *
+ * Copy this file to config.php and fill in your real values.
+ * NEVER commit config.php to version control (.gitignore already excludes it).
+ *
+ * For Gmail SMTP, create an App Password:
+ *   Google Account → Security → 2-Step Verification → App Passwords
+ */
+
+return [
+    'smtp' => [
+        'host'       => 'smtp.gmail.com',
+        'port'       => 587,
+        'encryption' => 'tls',
+        'username'   => 'your-email@gmail.com',
+        'password'   => 'your-app-password',   // Gmail App Password, NOT your regular password
+    ],
+    'admin_email'  => 'your-email@gmail.com',
+    'sender_name'  => 'Kindness Coin',
+    'sender_email' => 'your-email@gmail.com',
+    'db' => [
+        'host'     => '127.0.0.1',
+        'port'     => 3306,
+        'dbname'   => 'kindness',
+        'username' => 'kindness_user',          // Use a dedicated DB user, not root
+        'password' => 'strong-db-password',
+    ],
+    'admin_password' => 'change-this-before-going-live',
+
+    // Set to false in production to enable transactional emails.
+    'skip_email' => false,
+
+    // Story categories shown on the public Stories page and admin panel.
+    'categories' => ['Childhood Cancer', 'Diabetes', 'Disaster Relief', 'Environment', 'Humanitarian', 'Hunger', 'Vision', 'Youth'],
+];

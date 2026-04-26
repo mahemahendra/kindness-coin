@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install PHP dependencies
+        run: composer install --no-dev --optimize-autoloader
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -22,5 +25,5 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            vendor/**
+            forms/config.php
             forms/data/**

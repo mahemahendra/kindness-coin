@@ -56,7 +56,14 @@ $fullName     = trim(strip_tags($_POST['fullName'] ?? ''));
 $email        = trim(strip_tags($_POST['email'] ?? ''));
 $clubName     = trim(strip_tags($_POST['clubName'] ?? ''));
 $clubLocation = trim(strip_tags($_POST['clubLocation'] ?? ''));
+$country      = trim(strip_tags($_POST['country'] ?? ''));
+$stateCounty  = trim(strip_tags($_POST['stateCounty'] ?? ''));
 $story        = trim(strip_tags($_POST['story'] ?? ''));
+
+// Resolve Constitutional Area from country using the static map
+$caMap              = file_exists(__DIR__ . '/ca-map.php') ? (require __DIR__ . '/ca-map.php') : [];
+$caEntry            = $caMap[strtolower($country)] ?? null;
+$constitutionalArea = is_array($caEntry) ? ($caEntry['ca'] ?? '') : '';
 
 $errors = [];
 
@@ -79,18 +86,9 @@ if (!empty($errors)) {
     exit;
 }
 
-// --- Store in CSV ---
+// --- Handle optional image upload ---
 
 $timestamp = date('Y-m-d H:i:s');
-$csvPath   = $config['csv_path'];
-
-// Ensure data directory exists
-$dataDir = dirname($csvPath);
-if (!is_dir($dataDir)) {
-    mkdir($dataDir, 0755, true);
-}
-
-// --- Handle optional image upload ---
 $imagePath = '';
 
 if (isset($_FILES['storyImage']) && $_FILES['storyImage']['error'] === UPLOAD_ERR_OK) {
@@ -128,23 +126,40 @@ if (isset($_FILES['storyImage']) && $_FILES['storyImage']['error'] === UPLOAD_ER
         exit;
     }
 
-    // Store relative path (relative to project root) in CSV
     $imagePath = 'forms/data/uploads/' . $safeFilename;
 }
 
-$csvRow = [$timestamp, $fullName, $email, $clubName, $clubLocation, $story, $imagePath];
+// --- Store in MySQL ---
 
-$fp = fopen($csvPath, 'a');
-if ($fp === false) {
+try {
+    $db  = $config['db'];
+    $dsn = "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']};charset=utf8mb4";
+    $pdo = new PDO($dsn, $db['username'], $db['password'], [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ]);
+
+    $stmt = $pdo->prepare(
+        'INSERT INTO stories (submitted_at, full_name, email, club_name, club_location, country, constitutional_area, state_county, story, image_path)
+         VALUES (:submitted_at, :full_name, :email, :club_name, :club_location, :country, :constitutional_area, :state_county, :story, :image_path)'
+    );
+    $stmt->execute([
+        ':submitted_at'       => $timestamp,
+        ':full_name'          => $fullName,
+        ':email'              => $email,
+        ':club_name'          => $clubName,
+        ':club_location'      => $clubLocation,
+        ':country'            => $country,
+        ':constitutional_area' => $constitutionalArea,
+        ':state_county'       => $stateCounty,
+        ':story'              => $story,
+        ':image_path'         => $imagePath,
+    ]);
+} catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Unable to save your story. Please try again later.']);
     exit;
 }
-// Lock file to prevent concurrent write issues
-flock($fp, LOCK_EX);
-fputcsv($fp, $csvRow);
-flock($fp, LOCK_UN);
-fclose($fp);
 
 // --- Send Emails via PHPMailer ---
 
@@ -171,6 +186,8 @@ function createMailer(array $config): PHPMailer
 }
 
 $emailErrors = [];
+
+if (!($config['skip_email'] ?? false)) {
 
 // --- 1. Admin Notification Email ---
 $mail = null;
@@ -259,20 +276,13 @@ try {
     $emailErrors[] = 'Acknowledgment email failed: ' . ($mail ? $mail->ErrorInfo : $e->getMessage());
 }
 
+} // end skip_email check
+
 // Update rate limit timestamp
 $_SESSION['last_story_submit'] = $now;
 
 // --- Response ---
-if (!empty($emailErrors)) {
-    // CSV was saved but emails had issues
-    echo json_encode([
-        'success' => true,
-        'message' => 'Your story has been saved! However, there was an issue sending confirmation emails. Our team will follow up.',
-        'emailWarnings' => $emailErrors
-    ]);
-} else {
-    echo json_encode([
-        'success' => true,
-        'message' => 'Thank you for sharing your kindness story! A confirmation email has been sent to your inbox.'
-    ]);
-}
+echo json_encode([
+    'success' => true,
+    'message' => 'Thank you for sharing your kindness story! A confirmation email has been sent to your inbox.',
+]);

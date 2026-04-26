@@ -1,2 +1,2 @@
 # Deny direct web access to all files in this directory
-Deny from all
+Require all denied
