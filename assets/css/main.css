@@ -2865,8 +2865,7 @@ section,
 }
 
 #scroll-reveal-section-wrapper .text-wrapper {
-    width: 80%;
-    max-width: 900px;
+    width: 76%;
     margin: 0 auto;
     text-align: left;
     font-family: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;

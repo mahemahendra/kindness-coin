@@ -60,6 +60,43 @@ if ($authenticated && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['act
             http_response_code(500);
             echo json_encode(['success' => false]);
         }
+      } elseif ($id > 0 && $action === 'delete') {
+        try {
+          $db  = $config['db'];
+          $pdo = new PDO(
+            "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']};charset=utf8mb4",
+            $db['username'], $db['password'],
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+          );
+
+          $select = $pdo->prepare('SELECT image_path FROM stories WHERE id = :id LIMIT 1');
+          $select->execute([':id' => $id]);
+          $story = $select->fetch(PDO::FETCH_ASSOC);
+
+          if (!$story) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Story not found.']);
+            exit;
+          }
+
+          $pdo->prepare('DELETE FROM stories WHERE id = :id')->execute([':id' => $id]);
+
+          if (!empty($story['image_path'])) {
+            $relativePath = ltrim((string)$story['image_path'], '/\\');
+            $uploadBase   = realpath(__DIR__ . '/../forms/data/uploads');
+            $imageFull    = realpath(__DIR__ . '/../' . $relativePath);
+
+            // Delete only if the image resolves inside the uploads directory.
+            if ($uploadBase !== false && $imageFull !== false && str_starts_with($imageFull, $uploadBase) && is_file($imageFull)) {
+              @unlink($imageFull);
+            }
+          }
+
+          echo json_encode(['success' => true]);
+        } catch (PDOException $e) {
+          http_response_code(500);
+          echo json_encode(['success' => false]);
+        }
     } elseif ($id > 0 && $action === 'assign_category') {
         $allowed  = array_merge($config['categories'] ?? [], ['']);
         $category = isset($_POST['category']) && in_array($_POST['category'], $allowed, true)
@@ -236,10 +273,10 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
   </div>
   <div class="d-flex align-items-center gap-3">
     <span class="badge bg-warning text-dark">
-      <i class="bi bi-hourglass-split me-1"></i><?= $pendingCount ?? 0 ?> Pending
+      <i class="bi bi-hourglass-split me-1"></i><span id="pendingCountText"><?= (int)($pendingCount ?? 0) ?></span> Pending
     </span>
     <span class="badge bg-success">
-      <i class="bi bi-check-circle me-1"></i><?= $approvedCount ?? 0 ?> Approved
+      <i class="bi bi-check-circle me-1"></i><span id="approvedCountText"><?= (int)($approvedCount ?? 0) ?></span> Approved
     </span>
     <form method="POST" action="" class="mb-0">
       <button name="logout" class="btn btn-sm btn-outline-light">
@@ -333,14 +370,14 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
   <!-- ==== Table ==== -->
   <div class="table-wrap mb-3">
     <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-white">
-      <span class="text-muted small">
+      <span class="text-muted small" id="tableSummaryText" data-from-entry="<?= (int)$fromEntry ?>" data-total="<?= (int)$totalRows ?>">
         <?php if ($totalRows > 0): ?>
           Showing <strong><?= $fromEntry ?>–<?= $toEntry ?></strong> of <strong><?= number_format($totalRows) ?></strong> stories
         <?php else: ?>
           No stories found
         <?php endif; ?>
       </span>
-      <span class="badge bg-secondary"><?= number_format($totalRows) ?> total</span>
+      <span class="badge bg-secondary"><span id="tableTotalText"><?= number_format($totalRows) ?></span> total</span>
     </div>
 
     <?php if (count($rows) > 0): ?>
@@ -431,6 +468,10 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
                   <i class="bi bi-check-circle me-1"></i>Approve
                 </button>
               <?php endif; ?>
+              <button class="btn btn-sm btn-outline-danger btn-delete-story ms-1"
+                data-id="<?= (int)$row['id'] ?>" title="Delete story">
+                <i class="bi bi-trash"></i>
+              </button>
             </td>
           </tr>
           <?php endforeach; ?>
@@ -565,6 +606,9 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-outline-danger btn-sm me-auto" id="mDeleteBtn">
+          <i class="bi bi-trash me-1"></i>Delete
+        </button>
         <button type="button" class="btn btn-success btn-sm" id="mApproveBtn">
           <i class="bi bi-check-circle me-1"></i>Approve
         </button>
@@ -668,6 +712,85 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
     }
   }
 
+  function deleteStory(id, onSuccess) {
+    var body = new FormData();
+    body.append('action', 'delete');
+    body.append('id', id);
+    body.append('csrf_token', _csrfToken);
+
+    fetch('stories.php', { method: 'POST', body: body })
+      .then(function (r) {
+        return r.json().then(function (data) {
+          return { ok: r.ok, data: data };
+        });
+      })
+      .then(function (result) {
+        if (result.ok && result.data.success) {
+          onSuccess();
+        } else {
+          var msg = (result.data && result.data.message) ? result.data.message : 'Failed to delete story. Please try again.';
+          alert(msg);
+        }
+      })
+      .catch(function () { alert('Network error. Please try again.'); });
+  }
+
+  function formatNumber(n) {
+    return Number(n).toLocaleString('en-US');
+  }
+
+  function updateTopCountsAfterDelete(wasApproved) {
+    var pendingEl = document.getElementById('pendingCountText');
+    var approvedEl = document.getElementById('approvedCountText');
+    if (!pendingEl || !approvedEl) return;
+
+    var pending = parseInt(pendingEl.textContent, 10) || 0;
+    var approved = parseInt(approvedEl.textContent, 10) || 0;
+
+    if (wasApproved) {
+      approved = Math.max(0, approved - 1);
+    } else {
+      pending = Math.max(0, pending - 1);
+    }
+
+    pendingEl.textContent = String(pending);
+    approvedEl.textContent = String(approved);
+  }
+
+  function updateTableCountsAfterDelete() {
+    var summaryEl = document.getElementById('tableSummaryText');
+    if (!summaryEl) return;
+
+    var total = parseInt(summaryEl.dataset.total, 10) || 0;
+    total = Math.max(0, total - 1);
+    summaryEl.dataset.total = String(total);
+
+    var fromEntry = parseInt(summaryEl.dataset.fromEntry, 10) || 0;
+    var rowsShown = document.querySelectorAll('.table tbody tr').length;
+
+    if (total === 0 || rowsShown === 0) {
+      summaryEl.textContent = 'No stories found';
+    } else {
+      var start = fromEntry > 0 ? Math.min(fromEntry, total) : 1;
+      var end = start + rowsShown - 1;
+      summaryEl.innerHTML = 'Showing <strong>' + start + '\u2013' + end + '</strong> of <strong>' + formatNumber(total) + '</strong> stories';
+    }
+
+    var totalEl = document.getElementById('tableTotalText');
+    if (totalEl) totalEl.textContent = formatNumber(total);
+  }
+
+  function applyDeleteUiUpdate(id, wasApproved) {
+    removeRowFromDom(id);
+    updateTopCountsAfterDelete(wasApproved);
+    updateTableCountsAfterDelete();
+  }
+
+  function removeRowFromDom(id) {
+    var row = document.getElementById('row-' + id);
+    if (row) row.remove();
+  }
+
   // ---- Shared toggle function ----
   function toggleApproval(id, currentApprovedState, onSuccess) {
     var action = currentApprovedState ? 'reject' : 'approve';
@@ -690,6 +813,26 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
 
   // ---- Row inline approve buttons ----
   document.addEventListener('click', function (e) {
+    var deleteBtn = e.target.closest('.btn-delete-story');
+    if (deleteBtn) {
+      var deleteId = parseInt(deleteBtn.dataset.id, 10);
+      if (!deleteId) return;
+      var deleteRow = document.getElementById('row-' + deleteId);
+      var wasApproved = !!(deleteRow && deleteRow.classList.contains('approved-row'));
+      if (!confirm('Delete this story permanently? This cannot be undone.')) return;
+      deleteStory(deleteId, function () {
+        applyDeleteUiUpdate(deleteId, wasApproved);
+        if (currentId === deleteId) {
+          var modalEl = document.getElementById('detailModal');
+          var modalInstance = bootstrap.Modal.getInstance(modalEl);
+          if (modalInstance) modalInstance.hide();
+          currentId = null;
+          currentApproved = 0;
+        }
+      });
+      return;
+    }
+
     var btn = e.target.closest('.btn-toggle-approve');
     if (!btn) return;
     var id       = parseInt(btn.dataset.id, 10);
@@ -752,6 +895,22 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
       updateModalApprovalUI(newApproved);
       document.getElementById('mApprovedAt').textContent = data.approved_at || '\u2014';
       syncRowFromModal(currentId, newApproved, data);
+    });
+  });
+
+  document.getElementById('mDeleteBtn').addEventListener('click', function () {
+    if (!currentId) return;
+    var id = currentId;
+    var row = document.getElementById('row-' + id);
+    var wasApproved = !!(row && row.classList.contains('approved-row'));
+    if (!confirm('Delete this story permanently? This cannot be undone.')) return;
+    deleteStory(id, function () {
+      applyDeleteUiUpdate(id, wasApproved);
+      var modalEl = document.getElementById('detailModal');
+      var modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) modalInstance.hide();
+      currentId = null;
+      currentApproved = 0;
     });
   });
 
