@@ -420,23 +420,31 @@ body {
 
 /* Stats Section Styling
 ------------------------------*/
+.stats-highlight-bg {
+  background: linear-gradient(160deg, #0d1b2a 0%, #1a2e42 100%);
+}
+
 .stats-heading {
-  font-size: 3.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 7rem;
   font-weight: 700;
-  color: var(--heading-color);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  background: linear-gradient(135deg, #428bca 0%, #2e4455 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-style: italic;
+  color: #ffffff;
+  letter-spacing: 0px;
+  text-transform: none;
+  line-height: 1.05;
+  position: relative;
+  display: inline-block;
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+  text-shadow: 0 4px 30px rgba(66, 139, 202, 0.35);
   animation: fadeInUp 0.8s ease-out;
 }
 
 .stats-question {
   font-size: 2rem;
   font-weight: 600;
-  color: var(--heading-color);
+  color: rgba(255, 255, 255, 0.75);
   font-style: italic;
 }
 
@@ -2844,34 +2852,35 @@ section,
 
 /* --- Scoped Scroll Reveal Text Animation --- */
 #scroll-reveal-section-wrapper .animation-parent {
-    height: 200vh;
+    height: auto;
 }
 
 #scroll-reveal-section-wrapper .scroll-container {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+    top: auto;
+    height: auto;
+    overflow: visible;
+    display: block;
+    padding: 2rem 0;
 }
 
 #scroll-reveal-section-wrapper .text-wrapper {
     width: 80%;
     max-width: 900px;
+    margin: 0 auto;
     text-align: left;
     font-family: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
     font-size: clamp(1.2rem, 3vw, 2rem);
     font-weight: 300;
     line-height: 1.7;
-    will-change: transform, opacity, letter-spacing, word-spacing;
+    letter-spacing: 0;
+    word-spacing: 0;
 }
 
 #scroll-reveal-section-wrapper .text-wrapper span {
-    display: inline-block;
-    transition: transform 0.05s linear, opacity 0.05s linear;
-    will-change: transform, opacity;
+    display: inline;
+    opacity: 1;
+    transform: none;
 }
 
 /*--------------------------------------------------------------

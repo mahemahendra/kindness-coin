@@ -26,6 +26,11 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- Leaflet CSS for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Chart.js for Map Section Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 
 <body class="stories-page">
@@ -64,7 +69,7 @@
                 <li><a href="index.html#mission">Mission</a></li>
               </ul>
             </li>
-            <li class="dropdown"><a href="about.html"><span>About</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <li class="dropdown"><a><span>About</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
                 <li><a href="vision.html">Vision</a></li>
                 <li><a href="inspiration.html">Inspiration</a></li>
@@ -109,6 +114,74 @@
       </nav>
     </div><!-- End Page Title -->
 
+    <!-- World Map Section -->
+    <section id="map" class="map section dark-background">
+      <div class="container" data-aos="fade-up">
+        <div class="section-title text-center mb-4">
+          <h2>Kindness Around the World</h2>
+          <p>Track the journey of kindness coins across the globe</p>
+        </div>
+
+        <!-- Map Analytics -->
+        <div class="row justify-content-center mb-5 map-analytics" id="mapAnalytics">
+          <div class="col-lg-4 col-md-4 col-12 map-stat-col">
+            <div class="map-stat-card" data-aos="fade-up" data-aos-delay="100">
+              <i class="bi bi-journal-text map-stat-icon"></i>
+              <span class="map-stat-count" id="statTotalStories">0</span>
+              <p class="map-stat-label">Stories Shared</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-12 map-stat-col">
+            <div class="map-stat-card" data-aos="fade-up" data-aos-delay="200">
+              <i class="bi bi-globe-americas map-stat-icon"></i>
+              <span class="map-stat-count" id="statCountries">0</span>
+              <p class="map-stat-label">Countries Travelled</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-12 map-stat-col map-stat-col--last">
+            <div class="map-stat-card" data-aos="fade-up" data-aos-delay="300">
+              <i class="bi bi-calendar-heart map-stat-icon"></i>
+              <span class="map-stat-count" id="statThisMonth">0</span>
+              <p class="map-stat-label">This Month</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="row">
+          <div class="col-12">
+            <div id="worldMap"></div>
+          </div>
+        </div>
+
+        <!-- Chart Row -->
+        <div class="row mt-4 g-4" id="mapCharts">
+          <!-- Stories by Category -->
+          <div class="col-lg-6 col-12" data-aos="fade-up" data-aos-delay="100">
+            <div class="map-chart-card">
+              <h6 class="map-chart-title">Stories by Category</h6>
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+          <!-- Story Trends -->
+          <div class="col-lg-6 col-12" data-aos="fade-up" data-aos-delay="200">
+            <div class="map-chart-card">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="map-chart-title mb-0">Story Trends</h6>
+                <div class="btn-group btn-group-sm" id="trendToggle" role="group" aria-label="Trend time range">
+                  <button type="button" class="btn btn-chart-toggle trend-btn" data-range="week">Last Week</button>
+                  <button type="button" class="btn btn-chart-toggle trend-btn active" data-range="month">Last Month</button>
+                  <button type="button" class="btn btn-chart-toggle trend-btn" data-range="6months">Last 6 Months</button>
+                </div>
+              </div>
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+        </div><!-- /Chart Row -->
+
+      </div>
+    </section><!-- /Map Section -->
+
     <!-- Stories Section -->
     <section id="kindness-stories" class="section">
 
@@ -119,40 +192,6 @@
       </div><!-- End Section Title -->
 
       <div class="container">
-
-        <!-- Stories Side by Side -->
-        <div class="row gy-4 justify-content-center mb-5">
-
-          <!-- Story 1 -->
-          <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="story-card">
-              <div class="story-title">
-                <i class="bi bi-heart-fill text-danger"></i>
-                <h3>I Refused to Let Hope Slip Away</h3>
-              </div>
-              <p>Two decades ago, during a Zone's social event, a frail young boy was brought to me. His eyes carried the fear of pain far beyond his years. Diagnosed with a severe form of cancer, doctors had given up hope. The treatment required was expensive, and without chemotherapy, survival was almost impossible.</p>
-              <p>People stood in silence, unsure of what to do. "He won't survive," many said. But I refused to accept that fate and felt that he deserved a chance. Driven by compassion and an unshakable belief in the power of community, I mobilized a fundraiser. He rallied hearts, gathered resources, and ensured the boy received the life-saving chemotherapy he desperately needed.</p>
-              <p>Today, that boy is embracing life, thriving, and a living testament to what hope, kindness, and timely action can do! This was not just a story of saving a life; it was a promise fulfilled, a belief restored, and a quiet reminder of why humanity still wins. Because in that moment, I chose hope over doubt and in doing so, I witnessed a life rewritten into a future full of possibilities.</p>
-            </div>
-          </div>
-
-          <!-- Story 2 -->
-          <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="story-card">
-              <div class="story-title">
-                <i class="bi bi-eye-fill text-primary"></i>
-                <h3>The Day Her Silence Spoke Louder Than Words</h3>
-              </div>
-              <p>At one of the many cataract camps organized by Lions Clubs International, the goal had always been clear; to bring light back into lives shadowed by preventable blindness. With limited resources, I pooled in funds to ensure that as many life-changing surgeries as possible could be conducted.</p>
-              <p>Among the patients that day was an 80-year-old woman who had lived in darkness for years, with no family, no support, and no hope. Through the camp, her vision was restored.</p>
-              <p>After the procedure, she walked up to me. Her hands were worn, marked by years of hardship. Without saying a word, she embraced me and gently touched my cheek. That simple gesture which was humble, heartfelt, yet profound, carried more meaning than words ever could.</p>
-              <p>In that moment, I was reminded that our mission goes far beyond restoring sight. It is about restoring humanity, dignity, and the feeling of being seen.</p>
-              <p>And sometimes, in giving light to others, I find my own purpose illuminated.</p>
-            </div>
-          </div>
-
-        </div>
-
         <!-- Community Stories Divider -->
         <div class="row mt-5">
           <div class="col-12">
@@ -575,6 +614,270 @@
       });
 
     })();
+  </script>
+
+  <!-- Leaflet JS for Map -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Map Analytics Script -->
+  <script>
+    (function () {
+      'use strict';
+
+      function animateCount(el, target, duration) {
+        if (target === 0) { el.textContent = '0'; return; }
+        const start = performance.now();
+        function step(now) {
+          const elapsed = Math.min((now - start) / duration, 1);
+          const eased = 1 - (1 - elapsed) * (1 - elapsed);
+          el.textContent = Math.floor(eased * target).toLocaleString();
+          if (elapsed < 1) requestAnimationFrame(step);
+          else el.textContent = target.toLocaleString();
+        }
+        requestAnimationFrame(step);
+      }
+
+      function loadStats() {
+        fetch('forms/map-stats.php')
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (!data.success) return;
+            const els = {
+              statTotalStories: data.total_stories,
+              statCountries:    data.countries_travelled,
+              statThisMonth:    data.this_month,
+            };
+            Object.keys(els).forEach(function (id) {
+              const el = document.getElementById(id);
+              if (el) animateCount(el, els[id], 1800);
+            });
+          })
+          .catch(function () {});
+      }
+
+      const target = document.getElementById('mapAnalytics');
+      if (target && 'IntersectionObserver' in window) {
+        const obs = new IntersectionObserver(function (entries, observer) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              loadStats();
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.2 });
+        obs.observe(target);
+      } else if (target) {
+        loadStats();
+      }
+    }());
+  </script>
+
+  <!-- Map Section Charts Script -->
+  <script>
+    (function () {
+      'use strict';
+
+      var BLUE        = '#428bca';
+      var BLUE_FILL   = 'rgba(66,139,202,0.18)';
+      var GRID_COLOR  = 'rgba(255,255,255,0.08)';
+      var TICK_COLOR  = 'rgba(255,255,255,0.55)';
+      var FONT_SIZE   = 11;
+
+      Chart.defaults.color = TICK_COLOR;
+      Chart.defaults.font.size = FONT_SIZE;
+      Chart.defaults.font.family = "'Open Sans', sans-serif";
+
+      var trendChartInstance = null;
+      var trendDatasets      = {};
+
+      function buildCategoryChart(data) {
+        var labels = data.map(function (d) { return d.category; });
+        var counts = data.map(function (d) { return d.count; });
+        new Chart(document.getElementById('categoryChart'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Stories',
+              data: counts,
+              backgroundColor: BLUE,
+              borderRadius: 4,
+              borderSkipped: false,
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ' ' + ctx.raw + ' stor' + (ctx.raw === 1 ? 'y' : 'ies'); }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid:  { color: GRID_COLOR },
+                ticks: { color: TICK_COLOR, precision: 0 },
+                border: { color: GRID_COLOR },
+              },
+              y: {
+                grid:  { display: false },
+                ticks: { color: TICK_COLOR },
+                border: { color: GRID_COLOR },
+              }
+            }
+          }
+        });
+      }
+
+      function buildTrendChart(trend) {
+        trendDatasets = {
+          week:    { labels: trend.week.map(function (d) { return d.label; }),    data: trend.week.map(function (d) { return d.count; })    },
+          month:   { labels: trend.month.map(function (d) { return d.label; }),   data: trend.month.map(function (d) { return d.count; })   },
+          '6months': { labels: trend['6months'].map(function (d) { return d.label; }), data: trend['6months'].map(function (d) { return d.count; }) }
+        };
+
+        var initial = trendDatasets['month'];
+        trendChartInstance = new Chart(document.getElementById('trendChart'), {
+          type: 'line',
+          data: {
+            labels: initial.labels,
+            datasets: [{
+              label: 'Stories',
+              data: initial.data,
+              borderColor: BLUE,
+              backgroundColor: BLUE_FILL,
+              borderWidth: 2,
+              pointBackgroundColor: BLUE,
+              pointRadius: 3,
+              tension: 0.4,
+              fill: true,
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ' ' + ctx.raw + ' stor' + (ctx.raw === 1 ? 'y' : 'ies'); }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid:  { color: GRID_COLOR },
+                ticks: { color: TICK_COLOR },
+                border: { color: GRID_COLOR },
+              },
+              y: {
+                grid:  { color: GRID_COLOR },
+                ticks: { color: TICK_COLOR, precision: 0 },
+                border: { color: GRID_COLOR },
+                beginAtZero: true,
+              }
+            }
+          }
+        });
+
+        document.querySelectorAll('#trendToggle .trend-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var range = this.getAttribute('data-range');
+            document.querySelectorAll('#trendToggle .trend-btn').forEach(function (b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            var ds = trendDatasets[range];
+            trendChartInstance.data.labels           = ds.labels;
+            trendChartInstance.data.datasets[0].data = ds.data;
+            trendChartInstance.update();
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        fetch('forms/chart-stats.php')
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (!data.success) return;
+            if (data.category_counts && data.category_counts.length) {
+              buildCategoryChart(data.category_counts);
+            }
+            if (data.trend) {
+              buildTrendChart(data.trend);
+            }
+          })
+          .catch(function () {});
+      });
+    }());
+  </script>
+
+  <!-- World Map Script -->
+  <script>
+    'use strict';
+
+    var CA_CENTROIDS = {
+      'I':   [38.0,  -96.0],
+      'II':  [56.0, -106.0],
+      'III': [-15.0, -60.0],
+      'IV':  [50.0,   10.0],
+      'V':   [30.0,  115.0],
+      'VI':  [25.0,   75.0],
+      'VII': [-30.0, 150.0],
+      'VIII':[ 5.0,   20.0]
+    };
+
+    var CA_NAMES = {
+      'I':    'Constitutional Area I – USA & Caribbean',
+      'II':   'Constitutional Area II – Canada',
+      'III':  'Constitutional Area III – Latin America',
+      'IV':   'Constitutional Area IV – Europe & Middle East',
+      'V':    'Constitutional Area V – East & Southeast Asia',
+      'VI':   'Constitutional Area VI – South Asia & Middle East',
+      'VII':  'Constitutional Area VII – Oceania',
+      'VIII': 'Constitutional Area VIII – Africa'
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var map = L.map('worldMap', {
+        center: [20, 0],
+        zoom: 2,
+        zoomControl: true,
+        scrollWheelZoom: true
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      fetch('forms/map-stats.php')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (!data.success || !data.markers || data.markers.length === 0) return;
+          data.markers.forEach(function (item) {
+            var coords = CA_CENTROIDS[item.ca];
+            if (!coords) return;
+            var radius = Math.min(8 + item.count * 3, 30);
+            var label = item.count === 1 ? 'story' : 'stories';
+            var name = CA_NAMES[item.ca] || ('Constitutional Area ' + item.ca);
+            L.circleMarker([coords[0], coords[1]], {
+              radius: radius,
+              fillColor: '#428bca',
+              fillOpacity: 0.85,
+              color: '#ffffff',
+              weight: 2
+            })
+              .addTo(map)
+              .bindPopup(
+                '<strong>' + name + '</strong><br>' +
+                '<span style="color:#428bca">' + item.count + ' kindness ' + label + '</span>'
+              );
+          });
+        })
+        .catch(function () {});
+    });
   </script>
 
 </body>
