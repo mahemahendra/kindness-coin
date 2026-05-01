@@ -885,7 +885,7 @@ body {
 ------------------------------*/
 .toast-message {
   position: fixed;
-  bottom: 2rem;
+  bottom: 30vh;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
