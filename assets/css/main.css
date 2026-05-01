@@ -2996,6 +2996,11 @@ section,
   color: #fff;
 }
 
+.stories-filter-pill img {
+  width: 20px;
+  height: 20px;
+}
+
 .stories-sort-select {
   padding: 0.35rem 0.75rem;
   border-radius: 8px;
