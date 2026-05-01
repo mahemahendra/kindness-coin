@@ -926,6 +926,9 @@ body {
   flex-shrink: 0;
   opacity: 0.7;
   transition: opacity 0.2s;
+  position: absolute;
+  right: 0.2em;
+  margin-top: -1em;
 }
 
 .toast-close-btn:hover {
@@ -3102,6 +3105,14 @@ section,
   background: color-mix(in srgb, var(--accent-color), transparent 85%);
   color: var(--accent-color);
   margin-bottom: 0.5rem;
+}
+
+.cat-icon-img {
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+  vertical-align: middle;
+  border-radius: 2px;
 }
 
 

@@ -19,8 +19,15 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
 
-    $total     = (int) $pdo->query('SELECT COUNT(*) FROM stories')->fetchColumn();
-    $casReached = (int) $pdo->query("SELECT COUNT(DISTINCT constitutional_area) FROM stories WHERE approved = 1 AND constitutional_area != ''")->fetchColumn();
+    $total = (int) $pdo->query(
+        "SELECT COUNT(*) FROM stories WHERE approved = 1"
+    )->fetchColumn();
+    $countriesReached = (int) $pdo->query(
+        "SELECT COUNT(DISTINCT country) FROM stories WHERE approved = 1 AND country != ''"
+    )->fetchColumn();
+    $statesReached = (int) $pdo->query(
+        "SELECT COUNT(DISTINCT state_county) FROM stories WHERE approved = 1 AND state_county != ''"
+    )->fetchColumn();
     $thisMonth = (int) $pdo->query(
         'SELECT COUNT(*) FROM stories
          WHERE YEAR(submitted_at) = YEAR(NOW())
@@ -37,11 +44,18 @@ try {
     echo json_encode([
         'success'             => true,
         'total_stories'       => $total,
-        'countries_travelled' => $casReached,
+        'countries_travelled' => $countriesReached,
+        'states_travelled'    => $statesReached,
         'this_month'          => $thisMonth,
         'markers'             => $markers,
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'total_stories' => 0, 'countries_travelled' => 0, 'this_month' => 0]);
+    echo json_encode([
+        'success' => false,
+        'total_stories' => 0,
+        'countries_travelled' => 0,
+        'states_travelled' => 0,
+        'this_month' => 0,
+    ]);
 }

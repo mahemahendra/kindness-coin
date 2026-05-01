@@ -364,19 +364,25 @@
         return text.slice(0, maxChars).replace(/\s+\S*$/, '') + '…';
       }
 
-      // ---- Category icon map ----
-      var catIcons = {
-        'Childhood Cancer': 'bi-ribbon-fill',
-        'Diabetes':         'bi-droplet-fill',
-        'Disaster Relief':  'bi-house-exclamation-fill',
-        'Environment':      'bi-tree-fill',
-        'Humanitarian':     'bi-people-fill',
-        'Hunger':           'bi-egg-fried',
-        'Vision':           'bi-eye-fill',
-        'Youth':            'bi-person-hearts',
+      // ---- Category image map ----
+      var catImgSet = {
+        'Childhood Cancer': 1,
+        'Disaster Relief':  1,
+        'Environment':      1,
+        'Humanitarian':     1,
+        'Hunger':           1,
+        'Vision':           1,
+        'Youth':            1,
       };
-      function catIcon(category) {
-        return catIcons[category] || 'bi-heart-fill';
+      var catFallbackIcons = {
+        'Diabetes': 'bi-droplet-fill',
+      };
+      function catIconHtml(category) {
+        if (catImgSet[category]) {
+          return '<img src="assets/img/cat-icons/' + encodeURIComponent(category) + '.jpeg" alt="" class="cat-icon-img me-1">';
+        }
+        var icon = catFallbackIcons[category] || 'bi-heart-fill';
+        return '<i class="bi ' + icon + ' me-1"></i>';
       }
 
       // ---- Render a single card ----
@@ -392,7 +398,7 @@
         }
 
         var catBadge = s.category
-          ? '<span class="story-cat-badge"><i class="bi ' + catIcon(s.category) + ' me-1"></i>' + s.category + '</span>'
+          ? '<span class="story-cat-badge">' + catIconHtml(s.category) + s.category + '</span>'
           : '';
 
         var meta = [];
@@ -441,7 +447,7 @@
         }
 
         var metaItems = [];
-        if (s.category)     metaItems.push('<span><i class="bi ' + catIcon(s.category) + ' me-1"></i><strong>' + s.category + '</strong></span>');
+        if (s.category)     metaItems.push('<span>' + catIconHtml(s.category) + '<strong>' + s.category + '</strong></span>');
         if (s.club_name)    metaItems.push('<span><i class="bi bi-people-fill me-1"></i>' + s.club_name + '</span>');
         if (s.country) {
           var loc = s.country;
@@ -535,8 +541,7 @@
                 var btn = document.createElement('button');
                 btn.className = 'stories-filter-pill';
                 btn.dataset.cat = cat;
-                var icon = catIcons[cat] || 'bi-heart-fill';
-                btn.innerHTML = '<i class="bi ' + icon + ' me-1"></i>' + cat;
+                btn.innerHTML = catIconHtml(cat) + cat;
                 pillsWrap.appendChild(btn);
               });
             }
@@ -842,6 +847,7 @@
       var map = L.map('worldMap', {
         center: [20, 0],
         zoom: 2,
+        minZoom: 2,
         zoomControl: true,
         scrollWheelZoom: true
       });

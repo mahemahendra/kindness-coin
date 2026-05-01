@@ -144,7 +144,17 @@
             <div class="text-center">
               <i class="bi bi-people-fill"></i>
               <div class="stats-item">
-                <span data-purecounter-start="0" data-purecounter-end="512" data-purecounter-duration="2" class="purecounter"></span>
+                <span><span id="lionsServedCount" class="d-inline-flex">0</span>M</span>
+                <p>Lions Served</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="text-center">
+              <i class="bi bi-people-fill"></i>
+              <div class="stats-item">
+                <span id="homeCountriesCount">0</span>
                 <p>Countries Traveled</p>
               </div>
             </div>
@@ -154,18 +164,8 @@
             <div class="text-center">
               <i class="bi bi-building"></i>
               <div class="stats-item">
-                <span data-purecounter-start="0" data-purecounter-end="128" data-purecounter-duration="2" class="purecounter"></span>
-                <p>Individuals</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6">
-            <div class="text-center">
-              <i class="bi bi-journal-text"></i>
-              <div class="stats-item">
-                <span data-purecounter-start="0" data-purecounter-end="347" data-purecounter-duration="2" class="purecounter"></span>
-                <p>Submitted Stories</p>
+                <span id="homeStatesCount">0</span>
+                <p>States Traveled</p>
               </div>
             </div>
           </div>
@@ -174,7 +174,7 @@
             <div class="text-center">
               <i class="bi bi-book-half"></i>
               <div class="stats-item">
-                <span data-purecounter-start="0" data-purecounter-end="215" data-purecounter-duration="2" class="purecounter"></span>
+                <span id="homeStoriesCount">0</span>
                 <p>Stories Published</p>
               </div>
             </div>
@@ -583,6 +583,37 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
   <script src="assets/js/custom-animations.js"></script>
+
+  <!-- Lions Served Counter -->
+  <script>
+    (function () {
+      'use strict';
+      var el = document.getElementById('lionsServedCount');
+      if (!el) return;
+      function animate() {
+        var duration = 2000, start = performance.now();
+        function step(now) {
+          var t = Math.min((now - start) / duration, 1);
+          var eased = 1 - (1 - t) * (1 - t);
+          el.textContent = (eased * 1.4).toFixed(1);
+          if (t < 1) requestAnimationFrame(step);
+          else el.textContent = '1.4';
+        }
+        requestAnimationFrame(step);
+      }
+      var section = document.getElementById('about');
+      if (section && 'IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function (entries, observer) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { animate(); observer.disconnect(); }
+          });
+        }, { threshold: 0.2 });
+        obs.observe(section);
+      } else {
+        animate();
+      }
+    }());
+  </script>
   
   <!-- Hero Animation Script -->
   <script>
@@ -614,6 +645,12 @@
     (function () {
       'use strict';
 
+      var statsRequest = null;
+      var animatedGroups = {
+        home: false,
+        map: false,
+      };
+
       function animateCount(el, target, duration) {
         if (target === 0) { el.textContent = '0'; return; }
         const start = performance.now();
@@ -628,40 +665,88 @@
         requestAnimationFrame(step);
       }
 
-      function loadStats() {
-        fetch('forms/map-stats.php')
+      function fetchStats() {
+        if (!statsRequest) {
+          statsRequest = fetch('forms/map-stats.php')
           .then(function (r) { return r.json(); })
           .then(function (data) {
-            if (!data.success) return;
-            const els = {
-              statTotalStories: data.total_stories,
-              statCountries:    data.countries_travelled,
-              statThisMonth:    data.this_month,
-            };
-            Object.keys(els).forEach(function (id) {
-              const el = document.getElementById(id);
-              if (el) animateCount(el, els[id], 1800);
-            });
+            if (!data.success) {
+              throw new Error('Unable to load story stats');
+            }
+            return data;
           })
-          .catch(function () {});
+          .catch(function () {
+            statsRequest = null;
+            return null;
+          });
+        }
+
+        return statsRequest;
       }
 
-      // Trigger animation when the analytics row scrolls into view
-      const target = document.getElementById('mapAnalytics');
-      if (target && 'IntersectionObserver' in window) {
-        const obs = new IntersectionObserver(function (entries, observer) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              loadStats();
-              observer.disconnect();
-            }
-          });
-        }, { threshold: 0.2 });
-        obs.observe(target);
-      } else if (target) {
-        // Fallback — load immediately
-        loadStats();
+      function animateStats(idsToValues) {
+        Object.keys(idsToValues).forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) animateCount(el, idsToValues[id], 1800);
+        });
       }
+
+      function loadStats(group) {
+        if (animatedGroups[group]) {
+          return;
+        }
+
+        fetchStats().then(function (data) {
+          if (!data || animatedGroups[group]) {
+            return;
+          }
+
+          if (group === 'home') {
+            animateStats({
+              homeCountriesCount: data.countries_travelled,
+              homeStatesCount: data.states_travelled,
+              homeStoriesCount: data.total_stories,
+            });
+          }
+
+          if (group === 'map') {
+            animateStats({
+              statTotalStories: data.total_stories,
+              statCountries: data.countries_travelled,
+              statThisMonth: data.this_month,
+            });
+          }
+
+          animatedGroups[group] = true;
+        });
+      }
+
+      function observeStatsTarget(targetId, group, threshold) {
+        const target = document.getElementById(targetId);
+
+        if (!target) {
+          return;
+        }
+
+        if ('IntersectionObserver' in window) {
+          const obs = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                loadStats(group);
+                observer.disconnect();
+              }
+            });
+          }, { threshold: threshold });
+
+          obs.observe(target);
+          return;
+        }
+
+        loadStats(group);
+      }
+
+      observeStatsTarget('about', 'home', 0.2);
+      observeStatsTarget('mapAnalytics', 'map', 0.2);
     })();
   </script>
 
@@ -1043,6 +1128,7 @@
       var map = L.map('worldMap', {
         center: [20, 0],
         zoom: 2,
+        minZoom: 2,
         zoomControl: true,
         scrollWheelZoom: true
       });

@@ -653,7 +653,8 @@ $toEntry   = min($currentPage * $perPage, $totalRows);
       var imgWrap = document.getElementById('mImgWrap');
       var imgEl   = document.getElementById('mImg');
       if (row.image_path && row.image_path !== '') {
-        imgEl.src = '../' + row.image_path;
+        var filename = row.image_path.split('/').pop();
+        imgEl.src = 'image.php?file=' + encodeURIComponent(filename);
         imgWrap.classList.remove('d-none');
       } else {
         imgWrap.classList.add('d-none');
