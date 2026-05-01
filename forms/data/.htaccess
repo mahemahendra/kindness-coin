@@ -1,2 +1,6 @@
-# Deny direct web access to all files in this directory
-Require all denied
+# Deny direct web access to sensitive data files only.
+# The uploads/ subdirectory is intentionally left accessible
+# so that story images can be served to the browser.
+<FilesMatch "\.(csv|xlsx|xls|sql|txt|log|json)$">
+    Require all denied
+</FilesMatch>
