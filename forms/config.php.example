@@ -5,21 +5,20 @@
  * Copy this file to config.php and fill in your real values.
  * NEVER commit config.php to version control (.gitignore already excludes it).
  *
- * For Gmail SMTP, create an App Password:
- *   Google Account → Security → 2-Step Verification → App Passwords
+ * For Hostinger email, use your cPanel email account password.
  */
 
 return [
     'smtp' => [
-        'host'       => 'smtp.gmail.com',
+        'host'       => 'smtp.hostinger.com',
         'port'       => 587,
         'encryption' => 'tls',
-        'username'   => 'your-email@gmail.com',
-        'password'   => 'your-app-password',   // Gmail App Password, NOT your regular password
+        'username'   => 'your-email@yourdomain.com',
+        'password'   => 'your-email-password',         // Hostinger cPanel email account password
     ],
-    'admin_email'  => 'your-email@gmail.com',
+    'admin_email'  => 'your-email@yourdomain.com',
     'sender_name'  => 'Kindness Coin',
-    'sender_email' => 'your-email@gmail.com',
+    'sender_email' => 'your-email@yourdomain.com',
     'db' => [
         'host'     => '127.0.0.1',
         'port'     => 3306,
