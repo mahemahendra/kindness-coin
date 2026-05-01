@@ -239,12 +239,12 @@ try {
     $mail->Subject = 'Thank you for sharing your kindness story!';
     $mail->Body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+            <p style='font-size: 16px; line-height: 1.6; color: #333;'>
+                Dear Friend in Service,
+            </p>
             <h2 style='color: #0d6efd; border-bottom: 2px solid #0d6efd; padding-bottom: 10px;'>
                 Thank you&#8212;truly!
             </h2>
-            <p style='font-size: 16px; line-height: 1.6; color: #333;'>
-                Dear " . htmlspecialchars($fullName) . ",
-            </p>
             <p style='font-size: 16px; line-height: 1.6; color: #333;'>
                 I just wanted to personally appreciate you for being part of the Kindness Coin journey. The fact that you chose to carry this forward means more than words can express.
             </p>
