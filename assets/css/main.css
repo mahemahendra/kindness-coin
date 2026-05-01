@@ -101,6 +101,7 @@ body {
   color: var(--default-color);
   background-color: var(--background-color);
   font-family: var(--default-font);
+  overflow-x: hidden;
 }
 
 /* Hero Section Styles
@@ -394,6 +395,10 @@ body {
 
 /* Responsive Hero */
 @media (max-width: 768px) {
+  #hero {
+    min-height: 64vh;
+  }
+
   .coin {
     width: 120px;
     height: 120px;
@@ -418,6 +423,17 @@ body {
   }
 }
 
+@media (max-width: 480px) {
+  .coin {
+    width: 90px;
+    height: 90px;
+  }
+
+  .coin-face {
+    font-size: 24px;
+  }
+}
+
 /* Stats Section Styling
 ------------------------------*/
 .stats-highlight-bg {
@@ -426,7 +442,7 @@ body {
 
 .stats-heading {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 7rem;
+  font-size: 5rem;
   font-weight: 700;
   font-style: italic;
   color: #ffffff;
@@ -477,6 +493,21 @@ body {
 
 .btn-share-story:hover i {
   transform: translateX(5px);
+}
+
+@media (max-width: 767px) {
+  .stats-heading {
+    font-size: clamp(2rem, 8vw, 4rem);
+  }
+
+  .stats-question {
+    font-size: 1.25rem;
+  }
+
+  .btn-share-story {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
 }
 
 /*--------------------------------------------------------------
@@ -1301,6 +1332,18 @@ h6 {
   .header .topbar .contact-info i a,
   .header .topbar .contact-info i span {
     font-size: 13px;
+  }
+
+  .header .topbar .contact-info .bi-envelope a {
+    display: none;
+  }
+
+  .header .topbar .contact-info .bi-phone span {
+    display: none;
+  }
+
+  .header .topbar .contact-info .bi-phone {
+    margin-left: 0.5rem !important;
   }
 }
 
@@ -2869,7 +2912,7 @@ section,
     margin: 0 auto;
     text-align: left;
     font-family: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
-    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
     font-weight: 300;
     line-height: 1.7;
     letter-spacing: 0;
